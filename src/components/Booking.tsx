@@ -168,6 +168,7 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
   const [hovered, setHovered] = useState<string | null>(null);
   const total = services.length;
   const angleStep = 360 / total;
+  const rotationOffset = angleStep; // Rotar un sector en sentido horario
 
   return (
     <div className="py-8">
@@ -198,8 +199,8 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
           </defs>
 
           {services.map((service, i) => {
-            const startAngle = i * angleStep;
-            const endAngle = (i + 1) * angleStep;
+            const startAngle = i * angleStep + rotationOffset;
+            const endAngle = (i + 1) * angleStep + rotationOffset;
             const isHovered = hovered === service.name;
             const isSelected = selected === service.name;
             const path = describeArc(100, 100, 85, startAngle, endAngle);
