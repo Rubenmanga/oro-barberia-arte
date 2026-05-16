@@ -54,7 +54,9 @@ export default function Reviews() {
 
       <div className="mt-10 text-center">
         <a
-          href="#"
+          href="https://maps.app.goo.gl/XLcAwitWkFQ3kqu1A"
+          target="_blank"
+          rel="noopener noreferrer"
           className="font-accent text-sm text-gold-light tracking-[0.25em] uppercase border-b border-gold/40 pb-1 hover:text-gold-light hover:border-gold transition-colors"
         >
           Ver todas las reseñas en Google →
