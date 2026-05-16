@@ -163,7 +163,7 @@ export default function Booking() {
   );
 }
 
-// Paso 1: Selector de servicio circular (pie chart)
+// Paso 1: Selector de servicio circular con sectores e imagen de fondo
 function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string) => void }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const total = services.length;
@@ -174,51 +174,133 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
       <h3 className="font-display italic text-2xl md:text-3xl text-gold-light text-center mb-2">Elige tu servicio</h3>
       <p className="font-body text-foreground/60 text-center text-sm mb-10">Selecciona el servicio que necesitas</p>
 
-      <div className="relative w-full max-w-md mx-auto aspect-square">
-        <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
+      <div className="relative w-full max-w-[600px] mx-auto aspect-square">
+        {/* Imagen de fondo circular */}
+        <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-gold shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+          <img
+            src="/service-wheel.png"
+            alt="Servicios"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Sectores interactivos con overlay */}
+        <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full -rotate-90">
+          <defs>
+            {/* Filtro de brillo para hover */}
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
           {services.map((service, i) => {
             const startAngle = i * angleStep;
             const endAngle = (i + 1) * angleStep;
             const isHovered = hovered === service.name;
             const isSelected = selected === service.name;
-            const scale = isHovered || isSelected ? 1.08 : 1;
-            const path = describeArc(100, 100, isHovered || isSelected ? 88 : 85, startAngle, endAngle);
+            const path = describeArc(100, 100, 85, startAngle, endAngle);
+
+            // Calcular posición del texto en el sector
+            const midAngle = (startAngle + endAngle) / 2;
+            const textRadius = 65;
+            const textPos = polarToCartesian(100, 100, textRadius, midAngle);
 
             return (
               <g key={service.name}>
+                {/* Overlay oscuro semitransparente */}
                 <path
                   d={path}
-                  fill={service.color}
-                  opacity={isSelected ? 1 : isHovered ? 0.9 : 0.75}
-                  className="cursor-pointer transition-all duration-300"
-                  style={{ transformOrigin: "100px 100px", transform: `scale(${scale})` }}
+                  fill="rgba(0, 0, 0, 0.7)"
+                  opacity={isHovered ? 0 : isSelected ? 0.3 : 1}
+                  className="cursor-pointer transition-opacity duration-300 pointer-events-none"
+                />
+
+                {/* Área clickeable invisible */}
+                <path
+                  d={path}
+                  fill="transparent"
+                  className="cursor-pointer"
                   onMouseEnter={() => setHovered(service.name)}
                   onMouseLeave={() => setHovered(null)}
                   onClick={() => onSelect(service.name)}
                 />
+
+                {/* Borde del sector seleccionado */}
+                {isSelected && (
+                  <path
+                    d={path}
+                    fill="none"
+                    stroke="hsl(45, 85%, 55%)"
+                    strokeWidth="3"
+                    className="pointer-events-none"
+                    style={{ filter: 'drop-shadow(0 0 8px hsl(45, 85%, 55%))' }}
+                  />
+                )}
+
+                {/* Texto del servicio */}
+                <text
+                  x={textPos.x}
+                  y={textPos.y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="font-accent text-[7px] tracking-wider uppercase pointer-events-none rotate-90"
+                  fill={isHovered || isSelected ? "hsl(45, 85%, 65%)" : "hsl(45, 85%, 55%)"}
+                  style={{
+                    transformOrigin: `${textPos.x}px ${textPos.y}px`,
+                    filter: isHovered || isSelected ? 'drop-shadow(0 0 4px rgba(212, 175, 55, 0.8))' : 'none'
+                  }}
+                >
+                  {service.name}
+                </text>
               </g>
             );
           })}
+
+          {/* Círculo central dorado */}
+          <circle
+            cx="100"
+            cy="100"
+            r="25"
+            fill="hsl(45, 85%, 55%)"
+            className="pointer-events-none"
+            style={{ filter: 'drop-shadow(0 0 10px rgba(212, 175, 55, 0.6))' }}
+          />
         </svg>
+
+        {/* Texto central */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <div className="text-center px-4">
-            {hovered || selected ? (
-              <>
-                <p className="font-display italic text-xl md:text-2xl text-gold-light">{hovered || selected}</p>
-                <p className="font-accent text-gold text-sm mt-1">{services.find((s) => s.name === (hovered || selected))?.price}</p>
-              </>
-            ) : (
-              <p className="font-accent text-gold/50 text-xs tracking-[0.2em] uppercase">Pasa el cursor</p>
-            )}
+            <p className="font-accent text-[10px] text-ink tracking-[0.3em] uppercase font-bold leading-tight">
+              Elige tu<br/>servicio
+            </p>
           </div>
         </div>
+
+        {/* Información del servicio hover/seleccionado */}
+        {(hovered || selected) && (
+          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+            <p className="font-display italic text-xl md:text-2xl text-gold-light">
+              {hovered || selected}
+            </p>
+            <p className="font-accent text-gold text-sm mt-1">
+              {services.find((s) => s.name === (hovered || selected))?.price}
+            </p>
+          </div>
+        )}
       </div>
 
-      <div className="mt-8 grid grid-cols-2 sm:grid-cols-5 gap-2 max-w-2xl mx-auto">
+      {/* Botones de acceso rápido */}
+      <div className="mt-20 grid grid-cols-2 sm:grid-cols-5 gap-2 max-w-2xl mx-auto">
         {services.map((s) => (
           <button
             key={s.name}
             onClick={() => onSelect(s.name)}
+            onMouseEnter={() => setHovered(s.name)}
+            onMouseLeave={() => setHovered(null)}
             className={`px-3 py-2 text-xs font-accent tracking-wider border transition-all ${
               selected === s.name
                 ? "border-gold bg-gold/10 text-gold-light"
