@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, MessageCircle, Check, ChevronLeft, ChevronRight } from "lucide-react";
 
 const services = [
@@ -166,9 +166,45 @@ export default function Booking() {
 // Paso 1: Selector de servicio circular con sectores e imagen de fondo
 function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string) => void }) {
   const [hovered, setHovered] = useState<string | null>(null);
+  const [autoHighlightIndex, setAutoHighlightIndex] = useState(0);
+  const [isAutoPaused, setIsAutoPaused] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const total = services.length;
   const angleStep = 360 / total;
   const rotationOffset = angleStep; // Rotar un sector en sentido horario
+
+  // Detectar si es dispositivo táctil
+  useEffect(() => {
+    const checkTouchDevice = () => {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    checkTouchDevice();
+  }, []);
+
+  // Animación automática rotativa (solo en dispositivos táctiles)
+  useEffect(() => {
+    if (!isTouchDevice || isAutoPaused || selected) return;
+
+    const interval = setInterval(() => {
+      setAutoHighlightIndex((prev) => (prev + 1) % total);
+    }, 2000); // Cambia cada 2 segundos
+
+    return () => clearInterval(interval);
+  }, [isTouchDevice, isAutoPaused, selected, total]);
+
+  // Pausar animación en hover o touch
+  function handleInteractionStart(serviceName: string) {
+    setIsAutoPaused(true);
+    setHovered(serviceName);
+  }
+
+  function handleInteractionEnd() {
+    setHovered(null);
+    // Reanudar después de 3 segundos de inactividad
+    setTimeout(() => {
+      setIsAutoPaused(false);
+    }, 3000);
+  }
 
   return (
     <div className="py-8">
@@ -203,6 +239,8 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
             const endAngle = (i + 1) * angleStep + rotationOffset;
             const isHovered = hovered === service.name;
             const isSelected = selected === service.name;
+            const isAutoHighlighted = isTouchDevice && !isAutoPaused && !selected && autoHighlightIndex === i;
+            const isHighlighted = isHovered || isAutoHighlighted;
             const path = describeArc(100, 100, 85, startAngle, endAngle);
 
             // Calcular posición del texto en el sector
@@ -216,8 +254,8 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
                 <path
                   d={path}
                   fill="rgba(0, 0, 0, 0.7)"
-                  opacity={isHovered ? 0 : isSelected ? 0.3 : 1}
-                  className="cursor-pointer transition-opacity duration-300 pointer-events-none"
+                  opacity={isHighlighted ? 0 : isSelected ? 0.3 : 1}
+                  className="cursor-pointer transition-opacity duration-500 pointer-events-none"
                 />
 
                 {/* Área clickeable invisible */}
@@ -225,8 +263,10 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
                   d={path}
                   fill="transparent"
                   className="cursor-pointer"
-                  onMouseEnter={() => setHovered(service.name)}
-                  onMouseLeave={() => setHovered(null)}
+                  onMouseEnter={() => handleInteractionStart(service.name)}
+                  onMouseLeave={handleInteractionEnd}
+                  onTouchStart={() => handleInteractionStart(service.name)}
+                  onTouchEnd={handleInteractionEnd}
                   onClick={() => onSelect(service.name)}
                 />
 
@@ -248,11 +288,11 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
                   y={textPos.y}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  className="font-accent text-[7px] tracking-wider uppercase pointer-events-none rotate-90"
-                  fill={isHovered || isSelected ? "hsl(45, 85%, 65%)" : "hsl(45, 85%, 55%)"}
+                  className="font-accent text-[7px] tracking-wider uppercase pointer-events-none rotate-90 transition-all duration-500"
+                  fill={isHighlighted || isSelected ? "hsl(45, 85%, 65%)" : "hsl(45, 85%, 55%)"}
                   style={{
                     transformOrigin: `${textPos.x}px ${textPos.y}px`,
-                    filter: isHovered || isSelected ? 'drop-shadow(0 0 4px rgba(212, 175, 55, 0.8))' : 'none'
+                    filter: isHighlighted || isSelected ? 'drop-shadow(0 0 4px rgba(212, 175, 55, 0.8))' : 'none'
                   }}
                 >
                   {service.name}
@@ -281,14 +321,14 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
           </div>
         </div>
 
-        {/* Información del servicio hover/seleccionado */}
-        {(hovered || selected) && (
-          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+        {/* Información del servicio hover/seleccionado/auto-destacado */}
+        {(hovered || selected || (isTouchDevice && !isAutoPaused && !selected)) && (
+          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 text-center pointer-events-none transition-opacity duration-500">
             <p className="font-display italic text-xl md:text-2xl text-gold-light">
-              {hovered || selected}
+              {hovered || selected || (isTouchDevice ? services[autoHighlightIndex].name : '')}
             </p>
             <p className="font-accent text-gold text-sm mt-1">
-              {services.find((s) => s.name === (hovered || selected))?.price}
+              {services.find((s) => s.name === (hovered || selected || (isTouchDevice ? services[autoHighlightIndex].name : '')))?.price}
             </p>
           </div>
         )}
@@ -300,8 +340,10 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
           <button
             key={s.name}
             onClick={() => onSelect(s.name)}
-            onMouseEnter={() => setHovered(s.name)}
-            onMouseLeave={() => setHovered(null)}
+            onMouseEnter={() => handleInteractionStart(s.name)}
+            onMouseLeave={handleInteractionEnd}
+            onTouchStart={() => handleInteractionStart(s.name)}
+            onTouchEnd={handleInteractionEnd}
             className={`px-3 py-2 text-xs font-accent tracking-wider border transition-all ${
               selected === s.name
                 ? "border-gold bg-gold/10 text-gold-light"
