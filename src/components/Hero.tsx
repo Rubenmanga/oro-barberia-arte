@@ -9,7 +9,6 @@ export default function Hero() {
     backgroundImage: 'url(/local-hero.jpg)',
     backgroundSize: 'cover',
     backgroundPosition: 'center 30%',
-    backgroundAttachment: 'fixed',
   }}
 >
       {/* Overlay oscuro para legibilidad */}
