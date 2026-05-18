@@ -4,7 +4,16 @@ const tickerItems = ["Corte", "Barba", "Color", "Mechas", "Moldeador", "Desrizad
 
 export default function Hero() {
   return (
-    <section id="top" className="relative min-h-screen flex flex-col justify-center pt-28 pb-16 overflow-hidden">
+    <section id="top" className="relative min-h-screen flex flex-col justify-center pt-28 pb-16 overflow-hidden"
+  style={{
+    backgroundImage: 'url(/local-hero.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center 30%',
+    backgroundAttachment: 'fixed',
+  }}
+>
+      {/* Overlay oscuro para legibilidad */}
+<div className="absolute inset-0 bg-ink/80 pointer-events-none" />
       {/* Gold glow */}
       <div className="absolute -top-20 left-1/4 w-[600px] h-[600px] gold-glow pointer-events-none" />
       <div className="absolute bottom-10 right-0 w-[500px] h-[500px] gold-glow pointer-events-none opacity-60" />
