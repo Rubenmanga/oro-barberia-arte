@@ -1,18 +1,10 @@
 import { useState, useEffect } from "react";
 import { Phone, MessageCircle, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { createBooking, getBookedTimeSlots } from "@/lib/bookings";
+import { BUSINESS_CONFIG } from "@/lib/config";
+import { toast } from "sonner";
 
-const services = [
-  { name: "Caballeros", price: "10€", color: "hsl(45, 85%, 55%)" },
-  { name: "Niños", price: "8€", color: "hsl(45, 75%, 60%)" },
-  { name: "Estudiantes", price: "9€", color: "hsl(45, 80%, 52%)" },
-  { name: "Mechas", price: "20€", color: "hsl(42, 78%, 48%)" },
-  { name: "Color", price: "25€", color: "hsl(40, 82%, 50%)" },
-  { name: "Moldeador", price: "30€", color: "hsl(38, 80%, 46%)" },
-  { name: "Arreglo de Barba", price: "3€", color: "hsl(43, 88%, 58%)" },
-  { name: "Color Barba", price: "15€", color: "hsl(41, 76%, 44%)" },
-  { name: "Mechas Barba", price: "15€", color: "hsl(44, 84%, 54%)" },
-  { name: "Desrizado", price: "15€", color: "hsl(39, 79%, 42%)" },
-];
+const services = BUSINESS_CONFIG.services;
 
 interface BookingData {
   service: string;
@@ -23,9 +15,40 @@ interface BookingData {
   phone: string;
 }
 
-function submitBooking(data: BookingData) {
-  console.log("📅 Nueva reserva:", data);
-  // Aquí se conectará con API o base de datos en el futuro
+async function submitBooking(data: BookingData) {
+  try {
+    // Guardar en Supabase
+    await createBooking({
+      service: data.service,
+      date: data.date,
+      time: data.time,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      status: 'pending',
+    });
+
+    // Generar mensaje de WhatsApp
+    const message = `🎉 *Nueva reserva*\n\n` +
+      `👤 *Cliente:* ${data.name}\n` +
+      `✂️ *Servicio:* ${data.service}\n` +
+      `📅 *Fecha:* ${new Date(data.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}\n` +
+      `🕐 *Hora:* ${data.time}\n` +
+      `📧 *Email:* ${data.email}\n` +
+      `📱 *Teléfono:* ${data.phone}`;
+
+    // Abrir WhatsApp con el mensaje (notifica al negocio)
+    const whatsappUrl = `https://wa.me/${BUSINESS_CONFIG.contact.whatsapp}?text=${encodeURIComponent(message)}`;
+
+    console.log("✅ Reserva guardada:", data);
+    console.log("📱 WhatsApp URL:", whatsappUrl);
+
+    return { success: true, whatsappUrl };
+  } catch (error) {
+    console.error("❌ Error al guardar reserva:", error);
+    toast.error("Error al crear la reserva. Por favor, intenta de nuevo.");
+    return { success: false };
+  }
 }
 
 export default function Booking() {
@@ -43,10 +66,15 @@ export default function Booking() {
     if (step > 1) setStep(step - 1);
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (bookingData.service && bookingData.date && bookingData.time && bookingData.name && bookingData.email && bookingData.phone) {
-      submitBooking(bookingData as BookingData);
-      setSubmitted(true);
+      toast.loading("Creando tu reserva...");
+      const result = await submitBooking(bookingData as BookingData);
+
+      if (result.success) {
+        toast.success("¡Reserva creada con éxito!");
+        setSubmitted(true);
+      }
     }
   }
 
@@ -144,18 +172,18 @@ export default function Booking() {
 
         <div className="mt-8 grid sm:grid-cols-2 gap-4">
           <a
-            href="https://wa.me/34617087011"
+            href={`https://wa.me/${BUSINESS_CONFIG.contact.whatsapp}`}
             target="_blank"
             rel="noopener"
             className="flex items-center justify-center gap-3 py-4 border border-emerald-500/40 bg-emerald-500/5 text-emerald-300 font-accent tracking-[0.2em] text-sm uppercase hover:bg-emerald-500/10 transition-colors"
           >
-            <MessageCircle size={18} /> WhatsApp · 617 087 011
+            <MessageCircle size={18} /> WhatsApp · {BUSINESS_CONFIG.contact.phone}
           </a>
           <a
-            href="tel:617087011"
+            href={`tel:${BUSINESS_CONFIG.contact.phone}`}
             className="flex items-center justify-center gap-3 py-4 border border-gold/40 bg-gold/5 text-gold-light font-accent tracking-[0.2em] text-sm uppercase hover:bg-gold/10 transition-colors"
           >
-            <Phone size={18} /> Llamar · 617 087 011
+            <Phone size={18} /> Llamar · {BUSINESS_CONFIG.contact.phone}
           </a>
         </div>
       </div>
@@ -371,7 +399,7 @@ function Step2({ selected, onSelect }: { selected?: string; onSelect: (d: string
   function isDayClosed(day: number) {
     const date = new Date(year, month, day);
     const dayOfWeek = date.getDay();
-    return dayOfWeek === 0; // Domingo cerrado
+    return BUSINESS_CONFIG.hours.closedDays.includes(dayOfWeek);
   }
 
   function isPastDay(day: number) {
@@ -469,15 +497,37 @@ function Step2({ selected, onSelect }: { selected?: string; onSelect: (d: string
 
 // Paso 3: Selector de hora
 function Step3({ date, selected, onSelect }: { date: string; selected?: string; onSelect: (t: string) => void }) {
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const selectedDate = new Date(date + "T00:00:00");
   const dayOfWeek = selectedDate.getDay();
   const isSaturday = dayOfWeek === 6;
   const isToday = date === new Date().toISOString().split("T")[0];
 
-  // Horario: L-V 10:00-14:00 y 17:00-21:00, Sábados 10:00-14:00
-  const morningSlots = generateTimeSlots("10:00", "14:00");
-  const afternoonSlots = isSaturday ? [] : generateTimeSlots("17:00", "21:00");
+  // Horario según configuración
+  const scheduleConfig = isSaturday ? BUSINESS_CONFIG.hours.saturday : BUSINESS_CONFIG.hours.weekday;
+  const morningSlots = generateTimeSlots(scheduleConfig.morning.start, scheduleConfig.morning.end);
+  const afternoonSlots = scheduleConfig.afternoon
+    ? generateTimeSlots(scheduleConfig.afternoon.start, scheduleConfig.afternoon.end)
+    : [];
   const allSlots = [...morningSlots, ...afternoonSlots];
+
+  // Cargar horarios ocupados desde la base de datos
+  useEffect(() => {
+    async function loadBookedSlots() {
+      setLoading(true);
+      try {
+        const booked = await getBookedTimeSlots(date);
+        setBookedSlots(booked);
+      } catch (error) {
+        console.error("Error al cargar slots ocupados:", error);
+        toast.error("Error al cargar disponibilidad");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadBookedSlots();
+  }, [date]);
 
   function isTimePast(time: string) {
     if (!isToday) return false;
@@ -486,6 +536,22 @@ function Step3({ date, selected, onSelect }: { date: string; selected?: string; 
     const slotTime = new Date();
     slotTime.setHours(h, m, 0, 0);
     return slotTime <= now;
+  }
+
+  function isTimeBooked(time: string) {
+    return bookedSlots.includes(time);
+  }
+
+  if (loading) {
+    return (
+      <div className="py-8">
+        <h3 className="font-display italic text-2xl md:text-3xl text-gold-light text-center mb-2">Elige la hora</h3>
+        <p className="font-body text-foreground/60 text-center text-sm mb-8">Cargando disponibilidad...</p>
+        <div className="flex justify-center py-10">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gold"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -498,25 +564,31 @@ function Step3({ date, selected, onSelect }: { date: string; selected?: string; 
       <div className="max-w-2xl mx-auto space-y-6">
         {morningSlots.length > 0 && (
           <div>
-            <p className="font-accent text-xs text-gold tracking-[0.2em] uppercase mb-3">Mañana (10:00 - 14:00)</p>
+            <p className="font-accent text-xs text-gold tracking-[0.2em] uppercase mb-3">
+              Mañana ({scheduleConfig.morning.start} - {scheduleConfig.morning.end})
+            </p>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
               {morningSlots.map((time) => {
                 const isPast = isTimePast(time);
+                const isBooked = isTimeBooked(time);
+                const isDisabled = isPast || isBooked;
                 const isSelected = selected === time;
                 return (
                   <button
                     key={time}
                     onClick={() => onSelect(time)}
-                    disabled={isPast}
-                    className={`py-3 font-body text-sm transition-all ${
+                    disabled={isDisabled}
+                    className={`py-3 font-body text-sm transition-all relative ${
                       isSelected
                         ? "bg-gold text-ink border-2 border-gold font-bold"
-                        : isPast
-                        ? "text-foreground/20 cursor-not-allowed bg-transparent border border-border/30"
+                        : isDisabled
+                        ? "text-foreground/20 cursor-not-allowed bg-transparent border border-border/30 line-through"
                         : "text-foreground/80 border border-border hover:border-gold/60 hover:bg-gold/10 hover:text-gold-light"
                     }`}
+                    title={isBooked ? "Ocupado" : ""}
                   >
                     {time}
+                    {isBooked && <span className="absolute top-1 right-1 text-xs">🔒</span>}
                   </button>
                 );
               })}
@@ -524,27 +596,33 @@ function Step3({ date, selected, onSelect }: { date: string; selected?: string; 
           </div>
         )}
 
-        {afternoonSlots.length > 0 && (
+        {afternoonSlots.length > 0 && scheduleConfig.afternoon && (
           <div>
-            <p className="font-accent text-xs text-gold tracking-[0.2em] uppercase mb-3">Tarde (17:00 - 21:00)</p>
+            <p className="font-accent text-xs text-gold tracking-[0.2em] uppercase mb-3">
+              Tarde ({scheduleConfig.afternoon.start} - {scheduleConfig.afternoon.end})
+            </p>
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
               {afternoonSlots.map((time) => {
                 const isPast = isTimePast(time);
+                const isBooked = isTimeBooked(time);
+                const isDisabled = isPast || isBooked;
                 const isSelected = selected === time;
                 return (
                   <button
                     key={time}
                     onClick={() => onSelect(time)}
-                    disabled={isPast}
-                    className={`py-3 font-body text-sm transition-all ${
+                    disabled={isDisabled}
+                    className={`py-3 font-body text-sm transition-all relative ${
                       isSelected
                         ? "bg-gold text-ink border-2 border-gold font-bold"
-                        : isPast
-                        ? "text-foreground/20 cursor-not-allowed bg-transparent border border-border/30"
+                        : isDisabled
+                        ? "text-foreground/20 cursor-not-allowed bg-transparent border border-border/30 line-through"
                         : "text-foreground/80 border border-border hover:border-gold/60 hover:bg-gold/10 hover:text-gold-light"
                     }`}
+                    title={isBooked ? "Ocupado" : ""}
                   >
                     {time}
+                    {isBooked && <span className="absolute top-1 right-1 text-xs">🔒</span>}
                   </button>
                 );
               })}

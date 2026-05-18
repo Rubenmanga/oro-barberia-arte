@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git config *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "WebFetch(domain:oro-barberia-arte.lovable.app)",
+      "Read(//c/Users/JUAN MIGUEL/Documents/PERSONAL - RUBEN/IA/FranFuentes-Peluquero's/**)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npx tailwindcss *)",
+      "Bash(npm exec *)",
+      "Bash(npm run *)",
+      "Bash(npm uninstall *)",
+      "Bash(npm list *)",
+      "Bash(rm -rf node_modules/.vite)",
+      "Bash(rm -rf dist)",
+      "Bash(ipconfig)",
+      "Bash(pkill *)",
+      "Bash(taskkill //F //IM node.exe)"
+    ]
+  }
+}
