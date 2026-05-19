@@ -4,7 +4,7 @@ import { Menu, X, Scissors } from "lucide-react";
 const links = [
   { href: "#servicios", label: "Servicios" },
   { href: "#contacto", label: "Contacto" },
-  { href: "#reseñas", label: "Reseñas" },
+  { href: "#resenas", label: "Reseñas" },
 ];
 
 export default function Navbar() {
