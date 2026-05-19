@@ -34,21 +34,21 @@ export default function Navbar() {
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
           <a href="#top" className="flex items-center group">
   <div
-    className="relative flex-shrink-0"
     style={{
       width: "72px",
       height: "72px",
-      filter: "drop-shadow(0 4px 16px hsl(39 50% 57% / 0.5))",
+      isolation: "isolate",
     }}
   >
     <img
-      src="/logo.png?_2"
+      src="/logo.png"
       alt="Fran Fuentes Peluquero's"
       style={{
         width: "100%",
         height: "100%",
         objectFit: "contain",
-        mixBlendMode: "screen",
+        mixBlendMode: "multiply",
+        filter: "drop-shadow(0 2px 12px hsl(39 50% 57% / 0.6))",
       }}
     />
   </div>
