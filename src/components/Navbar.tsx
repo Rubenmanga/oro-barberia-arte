@@ -33,11 +33,25 @@ export default function Navbar() {
       >
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
           <a href="#top" className="flex items-center group">
-  <img
-    src="/logo_1.png"
-    alt="Fran Fuentes Peluquero's"
-    className="h-14 w-auto object-contain"
-  />
+  <div
+    className="relative flex-shrink-0"
+    style={{
+      width: "72px",
+      height: "72px",
+      filter: "drop-shadow(0 4px 16px hsl(39 50% 57% / 0.5))",
+    }}
+  >
+    <img
+      src="/logo.png"
+      alt="Fran Fuentes Peluquero's"
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "contain",
+        mixBlendMode: "screen",
+      }}
+    />
+  </div>
 </a>
 
           <div className="hidden md:flex items-center gap-10">
