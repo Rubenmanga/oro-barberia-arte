@@ -35,7 +35,7 @@ function ReviewCard({ r, i }: { r: typeof reviews[number]; i: number }) {
 export default function Reviews() {
   const head = useReveal<HTMLDivElement>();
   return (
-    <section id="reseñas" className="relative py-24 md:py-36 bg-ink-secondary/40 overflow-hidden">
+    <section id="resenas" className="relative py-24 md:py-36 bg-ink-secondary/40 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
         <div ref={head} className="reveal max-w-3xl">
           <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ Lo que dicen nuestros clientes</p>
