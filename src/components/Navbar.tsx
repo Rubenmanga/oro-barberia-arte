@@ -34,7 +34,7 @@ export default function Navbar() {
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
           <a href="#top" className="flex items-center group">
   <img
-    src="/logo.png"
+    src="/logo.png?v=2"
     alt="Fran Fuentes Peluquero's"
     className="h-14 w-auto object-contain"
   />
