@@ -32,12 +32,13 @@ export default function Navbar() {
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-3 group">
-            <span className="font-display italic text-2xl text-gold-light tracking-tight">FF</span>
-            <span className="hidden sm:block font-display italic text-sm text-foreground/80 group-hover:text-gold-light transition-colors">
-              Fran Fuentes
-            </span>
-          </a>
+          <a href="#top" className="flex items-center group">
+  <img
+    src="/logo.png"
+    alt="Fran Fuentes Peluquero's"
+    className="h-14 w-auto object-contain"
+  />
+</a>
 
           <div className="hidden md:flex items-center gap-10">
             {links.map((l) => (
