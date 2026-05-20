@@ -35,8 +35,8 @@ export default function Navbar() {
           <a href="#top" className="flex items-center group">
   <div
     style={{
-      width: "120px",
-      height: "120.px",
+      width: "100px",
+      height: "100px",
       background: "transparent",
     }}
   >
