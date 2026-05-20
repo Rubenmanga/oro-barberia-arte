@@ -1,17 +1,17 @@
-# ✂️ Fran Fuentes Peluquero's - Sistema de Reservas
+# ✂️ Oro Barbería Arte - Sistema de Reservas
 
 <div align="center">
 
-![Status](https://img.shields.io/badge/Status-En%20Desarrollo-yellow)
+![Status](https://img.shields.io/badge/Status-Producción-green)
 ![React](https://img.shields.io/badge/React-18.3-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)
-![Next.js](https://img.shields.io/badge/Next.js-15-black)
+![Vite](https://img.shields.io/badge/Vite-5.4-646CFF)
 ![Supabase](https://img.shields.io/badge/Supabase-Latest-green)
-![Resend](https://img.shields.io/badge/Resend-6.12-purple)
+![Brevo](https://img.shields.io/badge/Brevo-5.0.4-purple)
 
-**Web premium para peluquería con sistema de reservas en tiempo real**
+**Web premium para barbería con sistema de reservas en tiempo real y emails automáticos**
 
-[Demo](#) • [Documentación](#-documentación) • [Configuración](#-configuración-rápida)
+[Demo en vivo](https://oro-barberia-arte.vercel.app) • [Documentación](#-documentación) • [Inicio rápido](#-inicio-rápido)
 
 </div>
 
@@ -19,23 +19,24 @@
 
 ## 📖 Descripción
 
-Sistema de gestión de reservas para **Fran Fuentes Peluquero's** ubicado en El Puerto de Santa María. 
+Sistema completo de gestión de reservas para **Oro Barbería Arte** ubicado en El Puerto de Santa María. 
 
 Incluye:
 - ✨ Diseño premium con selector circular de servicios
 - 📅 Wizard de reservas en 4 pasos
 - ⚡ Sistema en tiempo real con Supabase
-- 📧 Emails automáticos de confirmación
-- 📱 Responsive (móvil y desktop)
-- 🔒 Detección de horarios ocupados
+- 📧 Emails automáticos con Brevo (cliente + peluquero)
+- 📱 Responsive (móvil, tablet y desktop)
+- 🔒 Detección de horarios ocupados en tiempo real
 - 🎨 Panel de administración completo
+- 🚀 Desplegado en Vercel con Serverless Functions
 
 ---
 
 ## 🚀 Características
 
 ### Para clientes:
-- Selector visual de servicios (rueda circular)
+- Selector visual de servicios (rueda circular premium)
 - Calendario con domingos cerrados automáticamente
 - Horarios ocupados bloqueados en tiempo real
 - Email de confirmación automático con detalles de la cita
@@ -44,7 +45,7 @@ Incluye:
 
 ### Para el peluquero:
 - Panel de administración (`/admin`)
-- Ver todas las reservas
+- Ver todas las reservas en tiempo real
 - Confirmar/cancelar citas
 - Filtros por estado
 - Estadísticas básicas
@@ -57,86 +58,109 @@ Incluye:
 | Tecnología | Uso |
 |------------|-----|
 | **React 18** | Framework frontend |
-| **TypeScript** | Tipado estático |
-| **Vite** | Build tool rápido |
+| **TypeScript 5.8** | Tipado estático |
+| **Vite 5.4** | Build tool rápido |
 | **Tailwind CSS** | Estilos utility-first |
-| **shadcn/ui** | Componentes UI |
-| **Supabase** | Base de datos + Auth |
+| **shadcn/ui** | Componentes UI profesionales |
+| **Supabase** | Base de datos PostgreSQL + Realtime |
 | **React Router** | Navegación SPA |
 | **Sonner** | Notificaciones toast |
-| **Resend** | Emails de confirmación |
+| **Brevo SDK v5** | Emails transaccionales |
+| **Vercel** | Hosting + Serverless Functions |
 
 ---
 
-## ⚡ Configuración rápida
+## ⚡ Inicio rápido
 
 ### Prerrequisitos
 
 - Node.js 18+ 
-- npm o bun
-- Cuenta en Supabase (gratis)
+- npm, pnpm o bun
+- Cuenta en [Supabase](https://supabase.com) (gratis)
+- Cuenta en [Brevo](https://www.brevo.com) (gratis - 300 emails/día)
 
-### Instalación
+### Instalación (15 minutos)
 
 ```bash
 # 1. Clonar el repositorio
-git clone [tu-repo-url]
+git clone https://github.com/rubenmanga/oro-barberia-arte.git
 cd oro-barberia-arte
 
 # 2. Instalar dependencias
 npm install
 
-# 3. Configurar Supabase (ver SETUP-RAPIDO.md)
-# - Crear proyecto en Supabase
-# - Ejecutar supabase-setup.sql
-# - Copiar credenciales a .env.local
+# 3. Configurar variables de entorno
+cp .env.local.example .env.local
+# Editar .env.local con tus credenciales (ver abajo)
 
-# 4. Arrancar en desarrollo
+# 4. Crear tabla en Supabase
+# - Ir a https://supabase.com/dashboard
+# - Crear proyecto nuevo
+# - SQL Editor → Ejecutar supabase-setup.sql
+
+# 5. Arrancar en desarrollo
 npm run dev
 ```
 
 ### Variables de entorno
 
-Crear archivo `.env.local` en la raíz:
+Edita `.env.local`:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
+# Supabase (obligatorio)
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu-anon-key
 
-# Resend (para emails de confirmación)
-RESEND_API_KEY=tu-resend-api-key
-PELUQUERO_EMAIL=tu-email@example.com
+# Brevo (obligatorio para emails)
+BREVO_API_KEY=tu-brevo-api-key
+BREVO_FROM_EMAIL=tu-email-verificado@ejemplo.com
+PELUQUERO_EMAIL=email-destino@ejemplo.com
 ```
 
-**Configurar Resend:**
+**⚠️ IMPORTANTE:** Los emails solo funcionan en producción (Vercel) o con `vercel dev`. No funcionan con `npm run dev` local. Ver [DESARROLLO-LOCAL-EMAILS.md](./DESARROLLO-LOCAL-EMAILS.md) para más detalles.
 
-1. ~~Crea una cuenta gratuita en [Resend](https://resend.com)~~ ✅
-2. ~~Obtén tu API Key desde el dashboard~~ ✅
-3. ~~Añade `RESEND_API_KEY` a `.env.local`~~ ✅
-4. ~~Añade `PELUQUERO_EMAIL` con el email donde quieres recibir notificaciones~~ ✅
-5. En producción (Vercel), añade estas variables en Settings → Environment Variables
+**Configurar Brevo:**
 
-**⚡ Verificar configuración:**
-```bash
-node verify-env.js
-```
+1. Crea cuenta gratuita en [Brevo](https://app.brevo.com/account/register)
+2. Ve a Settings → API Keys → Crea nueva API Key
+3. Verifica tu email en Settings → Senders
+4. Añade las 3 variables a `.env.local` (local) y a Vercel (producción)
 
 ---
 
 ## 📚 Documentación
 
+### 🚨 Lee primero
+
 | Documento | Descripción |
 |-----------|-------------|
-| **[DESARROLLO-LOCAL-EMAILS.md](./DESARROLLO-LOCAL-EMAILS.md)** | 🚨 **LEE ESTO PRIMERO** - Los emails solo funcionan en Vercel |
-| **[NEXT-STEPS.md](./NEXT-STEPS.md)** | 🚀 Próximos pasos ahora que todo está configurado |
-| **[RESUMEN-IMPLEMENTACION.md](./RESUMEN-IMPLEMENTACION.md)** | 📋 Resumen ejecutivo de la implementación de emails |
-| **[SETUP-RAPIDO.md](./SETUP-RAPIDO.md)** | Guía de instalación paso a paso (15 min) |
-| **[GUIA-SISTEMA-RESERVAS.md](./GUIA-SISTEMA-RESERVAS.md)** | Guía completa para aprender cómo funciona |
-| **[RESEND-SETUP.md](./RESEND-SETUP.md)** | Configuración de emails de confirmación con Resend (5 min) |
-| **[TESTING-EMAILS.md](./TESTING-EMAILS.md)** | Guía de testing para verificar emails |
-| **[DEPLOY-CHECKLIST.md](./DEPLOY-CHECKLIST.md)** | Checklist completo para deploy a producción |
-| **[CHANGELOG.md](./CHANGELOG.md)** | Registro de cambios y versiones |
-| **[supabase-setup.sql](./supabase-setup.sql)** | Script SQL para crear tabla en Supabase |
+| **[EMPEZAR-AQUI.md](./EMPEZAR-AQUI.md)** | 👉 **Empieza aquí** - Guía paso a paso completa (20 min) |
+| **[DOCUMENTACION-INDICE.md](./DOCUMENTACION-INDICE.md)** | 📇 Índice maestro de toda la documentación |
+| **[DESARROLLO-LOCAL-EMAILS.md](./DESARROLLO-LOCAL-EMAILS.md)** | 🚨 **Importante** - Por qué emails no funcionan en local |
+
+### Guías de configuración
+
+| Documento | Descripción |
+|-----------|-------------|
+| **[CAMBIAR-DATOS-CONTACTO.md](./CAMBIAR-DATOS-CONTACTO.md)** | 📝 Personalizar teléfono, email, horarios y servicios |
+| **[TESTING-EMAILS.md](./TESTING-EMAILS.md)** | 🧪 Guía completa para testing de emails |
+
+### Deploy y producción
+
+| Documento | Descripción |
+|-----------|-------------|
+| **[DESPLEGAR-A-PRODUCCION.md](./DESPLEGAR-A-PRODUCCION.md)** | 🚀 Guía completa de deploy en Vercel |
+| **[DEPLOY-CHECKLIST.md](./DEPLOY-CHECKLIST.md)** | ✅ Checklist exhaustivo pre/post-deploy |
+| **[ANTES-DE-VENDER.md](./ANTES-DE-VENDER.md)** | 💼 Checklist completo antes de presentar al cliente |
+
+### Aprendizaje y referencia
+
+| Documento | Descripción |
+|-----------|-------------|
+| **[GUIA-SISTEMA-RESERVAS.md](./GUIA-SISTEMA-RESERVAS.md)** | 📖 Guía didáctica completa - aprende cómo funciona todo |
+| **[RESUMEN-IMPLEMENTACION.md](./RESUMEN-IMPLEMENTACION.md)** | 📋 Resumen ejecutivo del proyecto |
+| **[NEXT-STEPS.md](./NEXT-STEPS.md)** | 🎯 Próximos pasos después del setup |
+| **[CHANGELOG.md](./CHANGELOG.md)** | 📝 Registro de cambios y versiones |
 
 ---
 
@@ -144,154 +168,168 @@ node verify-env.js
 
 ```
 oro-barberia-arte/
+├── api/
+│   └── send-confirmation.js    # ⚡ Serverless Function (Brevo emails)
 ├── src/
-│   ├── app/
-│   │   └── api/
-│   │       └── send-confirmation/   # API para emails
-│   │           └── route.ts
-│   ├── components/         # Componentes React
-│   │   ├── Booking.tsx     # Wizard de reservas
-│   │   ├── Hero.tsx        # Sección hero
-│   │   ├── Services.tsx    # Lista de servicios
+│   ├── components/              # Componentes React
+│   │   ├── Booking.tsx         # Wizard de reservas (4 pasos)
+│   │   ├── Hero.tsx            # Hero section con animaciones
+│   │   ├── Services.tsx        # Selector circular de servicios
+│   │   ├── ui/                 # Componentes shadcn/ui
 │   │   └── ...
 │   ├── pages/
-│   │   ├── Index.tsx       # Página principal
-│   │   └── Admin.tsx       # Panel administración
+│   │   ├── Index.tsx           # Página principal
+│   │   └── Admin.tsx           # Panel administración
 │   ├── lib/
-│   │   ├── supabase.ts     # Cliente Supabase
-│   │   └── bookings.ts     # Funciones CRUD
+│   │   ├── supabase.ts         # Cliente Supabase
+│   │   ├── bookings.ts         # Funciones CRUD
+│   │   └── config.ts           # 🎯 Configuración centralizada
 │   └── ...
-├── .env.local              # Variables de entorno (no subir a Git)
-├── .env.local.example      # Ejemplo de variables de entorno
-├── RESEND-SETUP.md         # Guía de configuración de Resend
-├── supabase-setup.sql      # Script BD
+├── .env.local                   # Variables de entorno (NO subir a Git)
+├── .env.local.example           # Plantilla de variables
+├── supabase-setup.sql           # Script SQL para crear tabla
+├── vercel.json                  # Configuración Vercel
 └── package.json
 ```
 
 ---
 
-## 📧 Sistema de Emails
+## 📧 Sistema de Emails (Brevo)
 
-El sistema envía automáticamente emails de confirmación cuando se crea una reserva:
+El sistema envía automáticamente 2 emails cuando se crea una reserva:
 
-### Email al cliente
+### 1. Email al cliente
 - ✅ Confirmación inmediata de la reserva
 - 📝 Detalles completos: servicio, fecha, hora, datos de contacto
-- 🎨 Diseño profesional con colores del brand
-- 📌 Recordatorio de confirmación por WhatsApp
+- 🎨 Diseño profesional con colores dorado/negro del brand
+- 📌 Nota recordando confirmación por WhatsApp
 
-### Email al peluquero
+### 2. Email al peluquero
 - 🔔 Notificación instantánea de nueva reserva
-- 👤 Todos los datos del cliente
-- 📅 Información de la cita
+- 👤 Todos los datos del cliente (nombre, email, teléfono)
+- 📅 Información completa de la cita
 - 💡 Recordatorio para confirmar con el cliente
 
-**Configuración:** Consulta [RESEND-SETUP.md](./RESEND-SETUP.md) para instrucciones detalladas.
+**Plan gratuito de Brevo:** 300 emails/día (9,000/mes) - más que suficiente para una barbería.
 
-**Plan gratuito de Resend:** 3,000 emails/mes (más que suficiente para una barbería).
-
----
-
-## 🎨 Capturas
-
-### Selector circular de servicios
-![Selector circular](docs/images/selector.png)
-
-### Panel de administración
-![Panel admin](docs/images/admin.png)
+**Nota técnica:** Los emails usan Vercel Serverless Functions (`/api/send-confirmation.js`) que solo funcionan en producción o con `vercel dev`. Ver [DESARROLLO-LOCAL-EMAILS.md](./DESARROLLO-LOCAL-EMAILS.md) para detalles.
 
 ---
 
-## 🚢 Despliegue
+## 🚢 Despliegue en Vercel (Recomendado)
 
-### Vercel (Recomendado)
+### Opción 1: CLI (rápido)
 
 ```bash
-# 1. Push a GitHub
-git push origin main
+# 1. Instalar Vercel CLI
+npm i -g vercel
 
-# 2. Importar en Vercel
-https://vercel.com/new
+# 2. Deploy
+vercel
 
-# 3. Añadir variables de entorno en Vercel
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-RESEND_API_KEY=...
-PELUQUERO_EMAIL=...
+# 3. Configurar variables de entorno
+vercel env add VITE_SUPABASE_URL production
+vercel env add VITE_SUPABASE_ANON_KEY production
+vercel env add BREVO_API_KEY production
+vercel env add BREVO_FROM_EMAIL production
+vercel env add PELUQUERO_EMAIL production
 
-# 4. Deploy
+# 4. Redeploy con variables
+vercel --prod
 ```
 
-### Netlify
+### Opción 2: Dashboard (recomendado para principiantes)
 
-```bash
-# 1. Build
-npm run build
+1. Push tu código a GitHub
+2. Ir a [vercel.com/new](https://vercel.com/new)
+3. Importar repositorio de GitHub
+4. Añadir variables de entorno en Settings → Environment Variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `BREVO_API_KEY`
+   - `BREVO_FROM_EMAIL`
+   - `PELUQUERO_EMAIL`
+5. Deploy
 
-# 2. Subir carpeta dist/
-https://app.netlify.com/drop
-```
+**✅ Checklist post-deploy:** Ver [DEPLOY-CHECKLIST.md](./DEPLOY-CHECKLIST.md)
 
 ---
 
-## 🗺️ Roadmap
+## 🎯 Roadmap
 
-- [x] Sistema de reservas básico
-- [x] Panel de administración
-- [x] Detección de horarios ocupados
-- [x] Notificaciones por email (Resend)
-- [ ] Autenticación para admin
-- [ ] Recordatorios automáticos
+### ✅ Implementado (v2.0.0)
+- [x] Sistema de reservas con wizard 4 pasos
+- [x] Panel de administración completo
+- [x] Detección de horarios ocupados en tiempo real
+- [x] Emails automáticos con Brevo
+- [x] Selector circular de servicios premium
+- [x] Responsive design (móvil, tablet, desktop)
+- [x] Deploy en Vercel con Serverless Functions
+
+### 🔜 Próximas mejoras
+- [ ] Autenticación para panel admin (Supabase Auth)
+- [ ] Recordatorios automáticos por email (1 día antes)
 - [ ] Integración con Google Calendar
-- [ ] Sistema de pagos (Stripe)
-- [ ] App móvil (React Native)
+- [ ] Dashboard con estadísticas avanzadas
+- [ ] Sistema de pagos anticipados (Stripe)
+- [ ] Multi-idioma (ES/EN)
+
+### 🚀 Futuro (v3.0)
+- [ ] App móvil nativa (React Native)
+- [ ] Sistema de fidelización de clientes
+- [ ] Integración con Instagram/Facebook
+- [ ] IA para recomendación de servicios
 
 ---
 
 ## 🤝 Contribuir
 
-Este es un proyecto de aprendizaje, pero las mejoras son bienvenidas:
+Este es un proyecto de código abierto. Las mejoras son bienvenidas:
 
 1. Fork el proyecto
-2. Crea una rama (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
-4. Push (`git push origin feature/AmazingFeature`)
+2. Crea una rama (`git checkout -b feature/MejoraMaestría`)
+3. Commit cambios (`git commit -m 'Add: nueva funcionalidad'`)
+4. Push (`git push origin feature/MejoraMaestría`)
 5. Abre un Pull Request
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es de uso personal para **Fran Fuentes Peluquero's**.
+Este proyecto es de uso personal para **Oro Barbería Arte**. Siéntete libre de usarlo como base para tu propio proyecto.
 
 ---
 
 ## 📞 Contacto
 
-**Peluquería:**
-- 📍 Dirección: Av. Música 12, El Puerto de Santa María
+**Oro Barbería Arte:**
+- 📍 Dirección: Av. Música 12, El Puerto de Santa María, Cádiz
 - 📱 WhatsApp: [617 087 011](https://wa.me/34617087011)
+- ✉️ Email: ruben.rugbier99@gmail.com
 - ⏰ Horario: L-V 10:00-14:00 y 17:00-21:00 | Sábados 10:00-14:00
+- 🌐 Web: [oro-barberia-arte.vercel.app](https://oro-barberia-arte.vercel.app)
 
 **Desarrollador:**
 - GitHub: [@rubenmanga](https://github.com/rubenmanga)
+- Proyecto: [oro-barberia-arte](https://github.com/rubenmanga/oro-barberia-arte)
 
 ---
 
 ## 🙏 Agradecimientos
 
-- [Supabase](https://supabase.com) - Base de datos backend
-- [shadcn/ui](https://ui.shadcn.com) - Componentes UI
-- [Lucide Icons](https://lucide.dev) - Iconos
-- [Vercel](https://vercel.com) - Hosting
-- [Resend](https://resend.com) - Emails transaccionales
+- [Supabase](https://supabase.com) - Base de datos PostgreSQL con Realtime
+- [Brevo](https://www.brevo.com) - Emails transaccionales profesionales
+- [shadcn/ui](https://ui.shadcn.com) - Componentes UI de calidad
+- [Lucide Icons](https://lucide.dev) - Iconos modernos
+- [Vercel](https://vercel.com) - Hosting y Serverless Functions
+- [Vite](https://vitejs.dev) - Build tool ultra-rápido
 
 ---
 
 <div align="center">
 
-**¡Hecho con ❤️ para aprender desarrollo web!**
+**¡Hecho con ❤️ para transformar negocios locales con tecnología moderna!**
 
-[⬆ Volver arriba](#-fran-fuentes-peluqueros---sistema-de-reservas)
+[⬆ Volver arriba](#-oro-barbería-arte---sistema-de-reservas)
 
 </div>
