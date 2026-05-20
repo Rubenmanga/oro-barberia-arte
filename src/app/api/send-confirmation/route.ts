@@ -1,4 +1,4 @@
-import brevo from '@getbrevo/brevo';
+import * as brevo from '@getbrevo/brevo';
 import { NextResponse } from 'next/server';
 
 interface BookingEmailData {
