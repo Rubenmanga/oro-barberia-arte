@@ -45,8 +45,17 @@ function Card({ title, items, delay = 0 }: { title: string; items: string[][]; d
 export default function Services() {
   const head = useReveal<HTMLDivElement>();
   return (
-    <section id="servicios" className="relative py-24 md:py-36 bg-ink-secondary/40">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <section
+      id="servicios"
+      className="relative py-24 md:py-36"
+      style={{
+        backgroundImage: 'url(/local-entero.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="absolute inset-0 bg-ink/75 pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-6 md:px-10">
         <div ref={head} className="reveal max-w-3xl">
           <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ Servicios</p>
           <h2 className="font-display italic text-5xl md:text-7xl mt-3 text-foreground">
