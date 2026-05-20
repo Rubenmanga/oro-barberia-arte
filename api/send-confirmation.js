@@ -1,4 +1,4 @@
-import * as brevo from '@getbrevo/brevo';
+import brevo from '@getbrevo/brevo';
 
 export default async function handler(req, res) {
   // Inicializar API instance dentro del handler para evitar problemas de cold start
