@@ -23,24 +23,8 @@ export default function Hero() {
         <div className="flex md:hidden items-start justify-between gap-4">
           {/* Texto */}
           <div className="flex-1">
-            {/* Logo encima del título */}
-            <div className="anim-up mb-6 flex justify-center" style={{ animationDelay: "0ms" }}>
-              <div style={{ width: "80px", height: "80px", background: "transparent" }}>
-                <img
-                  src="/logo_2.png"
-                  alt="Fran Fuentes Peluquero's"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
-                    backgroundColor: "transparent",
-                  }}
-                />
-              </div>
-            </div> 
-            <p className="anim-up font-accent text-xs text-gold tracking-[0.35em] uppercase mb-6" style={{ animationDelay: "150ms" }}>
-              ⎯⎯ Estilismo · El Puerto de Santa María
+            <p className="anim-up font-accent text-xs text-gold tracking-[0.35em] uppercase mb-6" style={{ animationDelay: "0ms" }}>
+              Estilismo · El Puerto de Santa María
             </p>
             <h1
               className="anim-up font-display italic font-semibold leading-[0.95] text-foreground"
@@ -66,9 +50,9 @@ export default function Hero() {
 
           {/* Poste decorativo pequeño en móvil */}
           <div className="anim-up flex-shrink-0 mt-2" style={{ animationDelay: "900ms" }}>
-            <div className="relative w-14 h-48 rounded-full overflow-hidden border border-gold-dark shadow-[0_10px_40px_-10px_hsl(var(--gold)/0.4)]">
-              <div className="absolute -top-1 inset-x-[-4px] h-5 rounded-full bg-gradient-to-b from-gold-light to-gold-dark border border-gold-dark z-10" />
-              <div className="absolute -bottom-1 inset-x-[-4px] h-5 rounded-full bg-gradient-to-b from-gold to-gold-dark border border-gold-dark z-10" />
+            <div className="relative w-10 h-48 rounded-full overflow-hidden border border-gold-dark shadow-[0_10px_40px_-10px_hsl(var(--gold)/0.4)]">
+              <div className="absolute -top-1 inset-x-[-3px] h-5 rounded-full bg-gradient-to-b from-gold-light to-gold-dark border border-gold-dark z-10" />
+              <div className="absolute -bottom-1 inset-x-[-3px] h-5 rounded-full bg-gradient-to-b from-gold to-gold-dark border border-gold-dark z-10" />
               <div className="absolute inset-0 barber-pole-stripes" style={{ backgroundSize: "100% 80px" }} />
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/15 to-white/0" />
               <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/50 to-transparent" />
@@ -81,24 +65,8 @@ export default function Hero() {
         {/* DESKTOP: layout original */}
         <div className="hidden md:grid md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-7">
-            {/* Logo encima del título */}
-            <div className="anim-up mb-8 flex justify-start" style={{ animationDelay: "0ms" }}>
-              <div style={{ width: "80px", height: "80px", background: "transparent" }}>
-                <img
-                  src="/logo_2.png"
-                  alt="Fran Fuentes Peluquero's"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
-                    backgroundColor: "transparent",
-                  }}
-                />
-              </div>
-            </div>
-            <p className="anim-up font-accent text-sm text-gold tracking-[0.35em] uppercase mb-8" style={{ animationDelay: "150ms" }}>
-              ⎯⎯ Estilismo · El Puerto de Santa María
+            <p className="anim-up font-accent text-sm text-gold tracking-[0.35em] uppercase mb-8" style={{ animationDelay: "0ms" }}>
+              Estilismo · El Puerto de Santa María
             </p>
             <h1
               className="anim-up font-display italic font-semibold leading-[0.95] text-foreground"
@@ -125,9 +93,9 @@ export default function Hero() {
           <div className="md:col-span-5 flex justify-end anim-up" style={{ animationDelay: "900ms" }}>
             <div className="relative">
               <div className="absolute inset-0 -m-8 gold-glow" />
-              <div className="relative w-36 h-[520px] rounded-full overflow-hidden border-2 border-gold-dark shadow-[0_30px_80px_-20px_hsl(var(--gold)/0.4)]">
-                <div className="absolute -top-2 inset-x-[-10px] h-8 rounded-full bg-gradient-to-b from-gold-light to-gold-dark border border-gold-dark z-10" />
-                <div className="absolute -bottom-2 inset-x-[-10px] h-8 rounded-full bg-gradient-to-b from-gold to-gold-dark border border-gold-dark z-10" />
+              <div className="relative w-24 h-[520px] rounded-full overflow-hidden border-2 border-gold-dark shadow-[0_30px_80px_-20px_hsl(var(--gold)/0.4)]">
+                <div className="absolute -top-2 inset-x-[-6px] h-8 rounded-full bg-gradient-to-b from-gold-light to-gold-dark border border-gold-dark z-10" />
+                <div className="absolute -bottom-2 inset-x-[-6px] h-8 rounded-full bg-gradient-to-b from-gold to-gold-dark border border-gold-dark z-10" />
                 <div className="absolute inset-0 barber-pole-stripes" style={{ backgroundSize: "100% 80px" }} />
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/15 to-white/0" />
                 <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/50 to-transparent" />
