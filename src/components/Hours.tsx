@@ -59,5 +59,11 @@ function ContactRow({ icon, text, href }: { icon: React.ReactNode; text: string;
       <span className="font-body text-foreground/85 group-hover:text-gold-light transition-colors">{text}</span>
     </div>
   );
-  return href ? <a href={href}>{Inner}</a> : Inner;
+  return href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="cursor-pointer block">
+      {Inner}
+    </a>
+  ) : (
+    Inner
+  );
 }
