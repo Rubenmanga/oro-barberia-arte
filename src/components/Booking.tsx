@@ -28,6 +28,40 @@ async function submitBooking(data: BookingData) {
       status: 'pending',
     });
 
+    // Enviar emails de confirmación
+    try {
+      const emailResponse = await fetch('/api/send-confirmation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          service: data.service,
+          date: data.date,
+          time: data.time,
+          phone: data.phone,
+        }),
+      });
+
+      if (!emailResponse.ok) {
+        console.error('Error al enviar emails de confirmación:', emailResponse.status);
+        // En desarrollo local, mostrar advertencia pero no fallar
+        if (window.location.hostname === 'localhost') {
+          console.warn('⚠️ Los emails no se envían en desarrollo local. Deploy a Vercel para probar emails.');
+        }
+      } else {
+        console.log('✅ Emails de confirmación enviados');
+      }
+    } catch (emailError) {
+      console.error('Error al enviar emails:', emailError);
+      // En desarrollo local, mostrar advertencia
+      if (window.location.hostname === 'localhost') {
+        console.warn('⚠️ Emails no disponibles en desarrollo local. La reserva se guardó correctamente.');
+      }
+    }
+
     // Generar mensaje de WhatsApp
     const message = `🎉 *Nueva reserva*\n\n` +
       `👤 *Cliente:* ${data.name}\n` +
