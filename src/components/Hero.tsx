@@ -19,26 +19,7 @@ export default function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-10 w-full">
 
-        {/* MÓVIL: layout apilado con poste decorativo pequeño */}
-        <div className="flex md:hidden items-start justify-between gap-4">
-          {/* Texto */}
-          <div className="flex-1">
-            {/* Logo encima del título */}
-            <div className="anim-up mb-6 flex justify-center" style={{ animationDelay: "0ms" }}>
-              <div style={{ width: "80px", height: "80px", background: "transparent" }}>
-                <img
-                  src="/logo_2.png"
-                  alt="Fran Fuentes Peluquero's"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
-                    backgroundColor: "transparent",
-                  }}
-                />
-              </div>
-            </div>
+        
             <p className="anim-up font-accent text-xs text-gold tracking-[0.35em] uppercase mb-6" style={{ animationDelay: "150ms" }}>
               ⎯⎯ Estilismo · El Puerto de Santa María
             </p>
