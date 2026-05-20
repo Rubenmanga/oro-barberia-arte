@@ -23,33 +23,49 @@ export default function Hero() {
         <div className="flex md:hidden items-start justify-between gap-4">
           {/* Texto */}
           <div className="flex-1">
-            <p className="anim-up font-accent text-xs text-gold tracking-[0.35em] uppercase mb-6" style={{ animationDelay: "0ms" }}>
+            {/* Logo encima del título */}
+            <div className="anim-up mb-6 flex justify-center" style={{ animationDelay: "0ms" }}>
+              <div style={{ width: "80px", height: "80px", background: "transparent" }}>
+                <img
+                  src="/logo_2.png"
+                  alt="Fran Fuentes Peluquero's"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              </div>
+            </div>
+            <p className="anim-up font-accent text-xs text-gold tracking-[0.35em] uppercase mb-6" style={{ animationDelay: "150ms" }}>
               ⎯⎯ Estilismo · El Puerto de Santa María
             </p>
             <h1
               className="anim-up font-display italic font-semibold leading-[0.95] text-foreground"
-              style={{ fontSize: "clamp(2.8rem, 12vw, 5rem)", animationDelay: "150ms" }}
+              style={{ fontSize: "clamp(2.8rem, 12vw, 5rem)", animationDelay: "300ms" }}
             >
               Fran Fuentes
               <span className="block text-gold-light">Peluquero<span className="text-gold">'s</span></span>
             </h1>
-            <p className="anim-up mt-5 font-body font-light text-base text-foreground/75" style={{ animationDelay: "300ms" }}>
+            <p className="anim-up mt-5 font-body font-light text-base text-foreground/75" style={{ animationDelay: "450ms" }}>
               Estilismo y tendencia para caballeros. Cortes, barba y color con la precisión de un oficio cuidado.
             </p>
-            <div className="anim-up mt-5 inline-flex items-center gap-3 px-4 py-2.5 border border-gold/30 bg-gold/5" style={{ animationDelay: "450ms" }}>
+            <div className="anim-up mt-5 inline-flex items-center gap-3 px-4 py-2.5 border border-gold/30 bg-gold/5" style={{ animationDelay: "600ms" }}>
               <Star size={14} className="fill-gold-light text-gold-light" />
               <span className="font-accent text-sm text-gold-light tracking-wider">4,9</span>
               <span className="w-px h-4 bg-gold/30" />
               <span className="font-body text-sm text-foreground/70">97 reseñas en Google</span>
             </div>
-            <div className="anim-up mt-7 flex flex-col gap-3" style={{ animationDelay: "600ms" }}>
+            <div className="anim-up mt-7 flex flex-col gap-3" style={{ animationDelay: "750ms" }}>
               <a href="#reservar" className="btn-gold text-center"><Scissors size={16} /> Reservar Cita</a>
               <a href="#servicios" className="btn-ghost text-center">Ver Servicios</a>
             </div>
           </div>
 
           {/* Poste decorativo pequeño en móvil */}
-          <div className="anim-up flex-shrink-0 mt-2" style={{ animationDelay: "750ms" }}>
+          <div className="anim-up flex-shrink-0 mt-2" style={{ animationDelay: "900ms" }}>
             <div className="relative w-14 h-48 rounded-full overflow-hidden border border-gold-dark shadow-[0_10px_40px_-10px_hsl(var(--gold)/0.4)]">
               <div className="absolute -top-1 inset-x-[-4px] h-5 rounded-full bg-gradient-to-b from-gold-light to-gold-dark border border-gold-dark z-10" />
               <div className="absolute -bottom-1 inset-x-[-4px] h-5 rounded-full bg-gradient-to-b from-gold to-gold-dark border border-gold-dark z-10" />
@@ -65,32 +81,48 @@ export default function Hero() {
         {/* DESKTOP: layout original */}
         <div className="hidden md:grid md:grid-cols-12 gap-10 items-center">
           <div className="md:col-span-7">
-            <p className="anim-up font-accent text-sm text-gold tracking-[0.35em] uppercase mb-8" style={{ animationDelay: "0ms" }}>
+            {/* Logo encima del título */}
+            <div className="anim-up mb-8 flex justify-start" style={{ animationDelay: "0ms" }}>
+              <div style={{ width: "80px", height: "80px", background: "transparent" }}>
+                <img
+                  src="/logo_2.png"
+                  alt="Fran Fuentes Peluquero's"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
+                    backgroundColor: "transparent",
+                  }}
+                />
+              </div>
+            </div>
+            <p className="anim-up font-accent text-sm text-gold tracking-[0.35em] uppercase mb-8" style={{ animationDelay: "150ms" }}>
               ⎯⎯ Estilismo · El Puerto de Santa María
             </p>
             <h1
               className="anim-up font-display italic font-semibold leading-[0.95] text-foreground"
-              style={{ fontSize: "clamp(3.25rem, 9vw, 8rem)", animationDelay: "150ms" }}
+              style={{ fontSize: "clamp(3.25rem, 9vw, 8rem)", animationDelay: "300ms" }}
             >
               Fran Fuentes
               <span className="block text-gold-light">Peluquero<span className="text-gold">'s</span></span>
             </h1>
-            <p className="anim-up mt-8 font-body font-light text-xl text-foreground/75 max-w-xl" style={{ animationDelay: "300ms" }}>
+            <p className="anim-up mt-8 font-body font-light text-xl text-foreground/75 max-w-xl" style={{ animationDelay: "450ms" }}>
               Estilismo y tendencia para caballeros. Cortes, barba y color con la precisión de un oficio cuidado.
             </p>
-            <div className="anim-up mt-7 inline-flex items-center gap-3 px-4 py-2.5 border border-gold/30 bg-gold/5" style={{ animationDelay: "450ms" }}>
+            <div className="anim-up mt-7 inline-flex items-center gap-3 px-4 py-2.5 border border-gold/30 bg-gold/5" style={{ animationDelay: "600ms" }}>
               <Star size={16} className="fill-gold-light text-gold-light" />
               <span className="font-accent text-sm text-gold-light tracking-wider">4,9</span>
               <span className="w-px h-4 bg-gold/30" />
               <span className="font-body text-sm text-foreground/70">97 reseñas en Google</span>
             </div>
-            <div className="anim-up mt-10 flex flex-wrap gap-4" style={{ animationDelay: "600ms" }}>
+            <div className="anim-up mt-10 flex flex-wrap gap-4" style={{ animationDelay: "750ms" }}>
               <a href="#reservar" className="btn-gold"><Scissors size={16} /> Reservar Cita</a>
               <a href="#servicios" className="btn-ghost">Ver Servicios</a>
             </div>
           </div>
 
-          <div className="md:col-span-5 flex justify-end anim-up" style={{ animationDelay: "750ms" }}>
+          <div className="md:col-span-5 flex justify-end anim-up" style={{ animationDelay: "900ms" }}>
             <div className="relative">
               <div className="absolute inset-0 -m-8 gold-glow" />
               <div className="relative w-36 h-[520px] rounded-full overflow-hidden border-2 border-gold-dark shadow-[0_30px_80px_-20px_hsl(var(--gold)/0.4)]">
