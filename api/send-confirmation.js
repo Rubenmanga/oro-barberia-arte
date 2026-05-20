@@ -1,46 +1,41 @@
 import * as brevo from '@getbrevo/brevo';
-import { NextResponse } from 'next/server';
 
 const apiInstance = new brevo.TransactionalEmailsApi();
 apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
 
-interface BookingEmailData {
-  name: string;
-  email: string;
-  service: string;
-  date: string;
-  time: string;
-  phone: string;
-}
+export default async function handler(req, res) {
+  // CORS headers para desarrollo local
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
-export async function POST(request: Request) {
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
-    const body: BookingEmailData = await request.json();
-    const { name, email, service, date, time, phone } = body;
+    const { name, email, service, date, time, phone } = req.body;
 
     if (!name || !email || !service || !date || !time || !phone) {
-      return NextResponse.json(
-        { error: 'Faltan datos requeridos' },
-        { status: 400 }
-      );
+      return res.status(400).json({ error: 'Faltan datos requeridos' });
     }
 
     const peluqueroEmail = process.env.PELUQUERO_EMAIL;
     if (!peluqueroEmail) {
       console.error('PELUQUERO_EMAIL no está configurado');
-      return NextResponse.json(
-        { error: 'Configuración de email incompleta' },
-        { status: 500 }
-      );
+      return res.status(500).json({ error: 'Configuración de email incompleta' });
     }
 
     const fromEmail = process.env.BREVO_FROM_EMAIL;
     if (!fromEmail) {
       console.error('BREVO_FROM_EMAIL no está configurado');
-      return NextResponse.json(
-        { error: 'Configuración de email incompleta' },
-        { status: 500 }
-      );
+      return res.status(500).json({ error: 'Configuración de email incompleta' });
     }
 
     const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('es-ES', {
@@ -303,7 +298,6 @@ export async function POST(request: Request) {
       apiInstance.sendTransacEmail(barberEmail),
     ]);
 
-    // Brevo lanza excepciones en caso de error, por lo que solo verificamos el status de la promesa
     let customerEmailSuccess = false;
     let barberEmailSuccess = false;
 
@@ -326,16 +320,16 @@ export async function POST(request: Request) {
       barberEmail: barberEmailSuccess ? 'sent' : 'failed',
     };
 
-    return NextResponse.json({
+    return res.status(200).json({
       success: true,
       results,
       message: 'Emails procesados',
     });
   } catch (error) {
     console.error('Error en API send-confirmation:', error);
-    return NextResponse.json(
-      { error: 'Error al enviar confirmaciones', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
+    return res.status(500).json({
+      error: 'Error al enviar confirmaciones',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 }
