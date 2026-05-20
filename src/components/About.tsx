@@ -6,9 +6,17 @@ export default function About() {
   const r2 = useReveal<HTMLDivElement>();
 
   return (
-    <section className="relative py-28 md:py-40">
+    <section
+      className="relative py-28 md:py-40"
+      style={{
+        backgroundImage: 'url(/local-interior.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="absolute inset-0 bg-ink/75 pointer-events-none" />
       <div className="absolute left-1/2 -translate-x-1/2 top-10 w-[400px] h-[400px] gold-glow opacity-50 pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-12 gap-12 md:gap-20 items-center">
+      <div className="relative max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-12 gap-12 md:gap-20 items-center">
         <div ref={r1} className="reveal md:col-span-6 relative">
           <span className="absolute -top-12 -left-2 font-display text-[10rem] leading-none text-gold/20 select-none">❝</span>
           <p className="font-display italic text-3xl md:text-5xl leading-tight text-gold-light">
