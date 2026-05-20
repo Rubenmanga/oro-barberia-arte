@@ -29,7 +29,7 @@ git push origin main
 | Variable | Valor |
 |----------|-------|
 | `RESEND_API_KEY` | `re_LZJdfYL3_4EvPsS3Nuhwy79etnYGJk8kx` |
-| `PELUQUERO_EMAIL` | `spam.insercible@gmail.com` |
+| `PELUQUERO_EMAIL` | `spam.inservible@gmail.com` |
 | `VITE_SUPABASE_URL` | `https://aetvsvajbvabxjeycvpz.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOi...` (tu key actual) |
 

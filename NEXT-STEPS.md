@@ -5,7 +5,7 @@
 Tu sistema de emails está **100% configurado** y listo para probar:
 
 - ✅ Resend API Key configurada
-- ✅ Email del peluquero configurado (spam.insercible@gmail.com)
+- ✅ Email del peluquero configurado (spam.inservible@gmail.com)
 - ✅ Supabase conectado
 - ✅ Código implementado
 - ✅ Documentación completa
@@ -48,7 +48,7 @@ Ve a: **http://localhost:3000**
 
    **Paso 4 - Datos:**
    - **Nombre:** Tu nombre
-   - **Email:** **spam.insercible@gmail.com** (tu email real)
+   - **Email:** **spam.inservible@gmail.com** (tu email real)
    - **Teléfono:** Cualquier número
 
 3. Click en **"Confirmar reserva"**
@@ -64,7 +64,7 @@ Abre la consola (F12) y deberías ver:
 
 ### 1.5 Verificar emails recibidos
 
-**Revisa tu bandeja de entrada (spam.insercible@gmail.com):**
+**Revisa tu bandeja de entrada (spam.inservible@gmail.com):**
 
 Deberías recibir **2 emails** (porque eres cliente y peluquero al mismo tiempo):
 
@@ -109,7 +109,7 @@ git push origin main
 | Key | Value |
 |-----|-------|
 | `RESEND_API_KEY` | `re_LZJdfYL3_4EvPsS3Nuhwy79etnYGJk8kx` |
-| `PELUQUERO_EMAIL` | `spam.insercible@gmail.com` |
+| `PELUQUERO_EMAIL` | `spam.inservible@gmail.com` |
 
 4. Selecciona: **Production, Preview, Development**
 5. Click **Save**

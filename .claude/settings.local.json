@@ -18,7 +18,10 @@
       "Bash(rm -rf dist)",
       "Bash(ipconfig)",
       "Bash(pkill *)",
-      "Bash(taskkill //F //IM node.exe)"
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(git fetch *)",
+      "Bash(node *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)"
     ]
   }
 }

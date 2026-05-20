@@ -1,9 +1,9 @@
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys, SendSmtpEmail } from '@getbrevo/brevo';
+import * as brevo from '@getbrevo/brevo';
 
 export default async function handler(req, res) {
   // Inicializar API instance dentro del handler para evitar problemas de cold start
-  const apiInstance = new TransactionalEmailsApi();
-  apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
+  const apiInstance = new brevo.TransactionalEmailsApi();
+  apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
   // CORS headers para desarrollo local
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -281,13 +281,13 @@ export default async function handler(req, res) {
     `;
 
     // Preparar emails con Brevo
-    const customerEmail = new SendSmtpEmail();
+    const customerEmail = new brevo.SendSmtpEmail();
     customerEmail.sender = { name: 'Oro Barbería Arte', email: fromEmail };
     customerEmail.to = [{ email: email }];
     customerEmail.subject = emailSubject;
     customerEmail.htmlContent = emailHtml;
 
-    const barberEmail = new SendSmtpEmail();
+    const barberEmail = new brevo.SendSmtpEmail();
     barberEmail.sender = { name: 'Sistema de Reservas', email: fromEmail };
     barberEmail.to = [{ email: peluqueroEmail }];
     barberEmail.subject = `Nueva Reserva - ${name} - ${service}`;
