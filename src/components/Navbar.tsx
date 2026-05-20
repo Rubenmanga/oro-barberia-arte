@@ -40,7 +40,7 @@ export default function Navbar() {
     }}
   >
     <img
-      src="/logo.png"
+      src="/logo_2.png"
       alt="Fran Fuentes Peluquero's"
       style={{
         width: "100%",
