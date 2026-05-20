@@ -37,7 +37,6 @@ export default function Navbar() {
     style={{
       width: "72px",
       height: "72px",
-      isolation: "isolate",
     }}
   >
     <img
@@ -47,8 +46,7 @@ export default function Navbar() {
         width: "100%",
         height: "100%",
         objectFit: "contain",
-        mixBlendMode: "multiply",
-        filter: "drop-shadow(0 2px 12px hsl(39 50% 57% / 0.6))",
+        filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
       }}
     />
   </div>
