@@ -1,9 +1,10 @@
-import * as brevo from '@getbrevo/brevo';
+import { BrevoClient } from '@getbrevo/brevo';
 
 export default async function handler(req, res) {
   // Inicializar API instance dentro del handler para evitar problemas de cold start
-  const apiInstance = new brevo.TransactionalEmailsApi();
-  apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
+  const brevo = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+  });
   // CORS headers para desarrollo local
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -280,22 +281,20 @@ export default async function handler(req, res) {
       </html>
     `;
 
-    // Preparar emails con Brevo
-    const customerEmail = new brevo.SendSmtpEmail();
-    customerEmail.sender = { name: 'Oro Barbería Arte', email: fromEmail };
-    customerEmail.to = [{ email: email }];
-    customerEmail.subject = emailSubject;
-    customerEmail.htmlContent = emailHtml;
-
-    const barberEmail = new brevo.SendSmtpEmail();
-    barberEmail.sender = { name: 'Sistema de Reservas', email: fromEmail };
-    barberEmail.to = [{ email: peluqueroEmail }];
-    barberEmail.subject = `Nueva Reserva - ${name} - ${service}`;
-    barberEmail.htmlContent = notificationHtml;
-
+    // Enviar emails con Brevo v5 API
     const [customerEmailResult, barberEmailResult] = await Promise.allSettled([
-      apiInstance.sendTransacEmail(customerEmail),
-      apiInstance.sendTransacEmail(barberEmail),
+      brevo.transactionalEmails.sendTransacEmail({
+        sender: { name: 'Oro Barbería Arte', email: fromEmail },
+        to: [{ email: email }],
+        subject: emailSubject,
+        htmlContent: emailHtml,
+      }),
+      brevo.transactionalEmails.sendTransacEmail({
+        sender: { name: 'Sistema de Reservas', email: fromEmail },
+        to: [{ email: peluqueroEmail }],
+        subject: `Nueva Reserva - ${name} - ${service}`,
+        htmlContent: notificationHtml,
+      }),
     ]);
 
     let customerEmailSuccess = false;
