@@ -37,6 +37,7 @@ export default function Navbar() {
     style={{
       width: "72px",
       height: "72px",
+      background: "transparent",
     }}
   >
     <img
@@ -47,6 +48,7 @@ export default function Navbar() {
         height: "100%",
         objectFit: "contain",
         filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
+        backgroundColor: "transparent",
       }}
     />
   </div>
