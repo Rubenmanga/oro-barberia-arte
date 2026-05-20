@@ -28,7 +28,7 @@ export default function Hours() {
           </ul>
 
           <div className="mt-12 space-y-4">
-            <ContactRow icon={<MapPin size={18} />} text="Av. de la Música, 12 · El Puerto de Santa María · Cádiz" />
+            <ContactRow icon={<MapPin size={18} />} text="Av. de la Música, 12 · El Puerto de Santa María · Cádiz" href="https://maps.app.goo.gl/WJGmrFbPfvdZdBNj6" />
             <ContactRow icon={<Phone size={18} />} text="617 087 011" href="tel:617087011" />
             <ContactRow icon={<Mail size={18} />} text="franfuentespeluqueros@hotmail.com" href="mailto:franfuentespeluqueros@hotmail.com" />
           </div>
