@@ -1,5 +1,11 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+    { "source": "/((?!api).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/send-confirmation.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
 }
