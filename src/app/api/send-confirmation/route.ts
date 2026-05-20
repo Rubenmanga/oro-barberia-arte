@@ -1,8 +1,5 @@
-import * as brevo from '@getbrevo/brevo';
+import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys, SendSmtpEmail } from '@getbrevo/brevo';
 import { NextResponse } from 'next/server';
-
-const apiInstance = new brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
 
 interface BookingEmailData {
   name: string;
@@ -15,6 +12,10 @@ interface BookingEmailData {
 
 export async function POST(request: Request) {
   try {
+    // Inicializar API instance dentro del handler
+    const apiInstance = new TransactionalEmailsApi();
+    apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY || '');
+
     const body: BookingEmailData = await request.json();
     const { name, email, service, date, time, phone } = body;
 
@@ -286,13 +287,13 @@ export async function POST(request: Request) {
     `;
 
     // Preparar emails con Brevo
-    const customerEmail = new brevo.SendSmtpEmail();
+    const customerEmail = new SendSmtpEmail();
     customerEmail.sender = { name: 'Oro Barbería Arte', email: fromEmail };
     customerEmail.to = [{ email: email }];
     customerEmail.subject = emailSubject;
     customerEmail.htmlContent = emailHtml;
 
-    const barberEmail = new brevo.SendSmtpEmail();
+    const barberEmail = new SendSmtpEmail();
     barberEmail.sender = { name: 'Sistema de Reservas', email: fromEmail };
     barberEmail.to = [{ email: peluqueroEmail }];
     barberEmail.subject = `Nueva Reserva - ${name} - ${service}`;
