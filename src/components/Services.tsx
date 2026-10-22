@@ -2,18 +2,18 @@ import { Scissors } from "lucide-react";
 import { useReveal } from "@/hooks/use-reveal";
 
 const cortes = [
-  ["Corte de caballero", "10,00€"],
-  ["Corte infantil (hasta 12 años)", "8,00€"],
-  ["Corte estudiante (hasta 18 años)", "9,00€"],
+  ["Caballeros", "10,00€"],
+  ["Niños (hasta 12 años)", "8,00€"],
+  ["Estudiantes (hasta 18 años)", "9,00€"],
   ["Mechas", "20,00€"],
   ["Color", "25,00€"],
   ["Moldeador", "30,00€"],
 ];
 
 const barba = [
-  ["Arreglo de barba", "3,00€"],
-  ["Color de barba", "15,00€"],
-  ["Mechas en barba", "15,00€"],
+  ["Arreglo de Barba", "3,00€"],
+  ["Color", "15,00€"],
+  ["Mechas", "15,00€"],
   ["Desrizado", "15,00€"],
 ];
 
@@ -47,23 +47,22 @@ export default function Services() {
   return (
     <section
       id="servicios"
-      aria-label="Servicios y precios de la peluquería"
       className="relative py-24 md:py-36 bg-ink-secondary"
     >
       <div className="relative max-w-7xl mx-auto px-6 md:px-10">
         <div ref={head} className="reveal max-w-3xl">
           <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ Servicios</p>
           <h2 className="font-display italic text-5xl md:text-7xl mt-3 text-foreground">
-            Servicios y <span className="text-gold-light">precios</span>
+            Carta y <span className="text-gold-light">precios</span>
           </h2>
           <p className="mt-5 font-body text-foreground/70 max-w-xl">
-            Corte de pelo de caballero por 10 €, corte infantil por 8 € y arreglo de barba por 3 €. Precios claros, sin sorpresas, en nuestra peluquería de El Puerto de Santa María. Elige tu servicio y reserva tu cita online.
+            Tarifas transparentes. Reserva el servicio que necesitas y te confirmamos disponibilidad.
           </p>
         </div>
 
         <div className="mt-16 grid md:grid-cols-2 gap-8 md:gap-10">
-          <Card title="Corte y color" items={cortes} />
-          <Card title="Barba y tratamientos" items={barba} delay={120} />
+          <Card title="Cortes" items={cortes} />
+          <Card title="Barba & Tratamientos" items={barba} delay={120} />
         </div>
 
         <div className="mt-16 text-center">

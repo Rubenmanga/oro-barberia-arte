@@ -5,7 +5,6 @@ import Services from "@/components/Services";
 import Booking from "@/components/Booking";
 import Reviews from "@/components/Reviews";
 import Hours from "@/components/Hours";
-import Faq from "@/components/Faq";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -18,7 +17,6 @@ const Index = () => {
       <Booking />
       <Reviews />
       <Hours />
-      <Faq />
       <Footer />
     </main>
   );

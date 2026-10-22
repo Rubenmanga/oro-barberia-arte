@@ -1,7 +1,7 @@
 import { Star, Scissors, ChevronDown } from "lucide-react";
 import { BUSINESS_CONFIG } from "@/lib/config";
 
-const tickerItems = ["Corte de pelo", "Arreglo de barba", "Color", "Mechas", "Moldeador", "Desrizado", "Corte infantil"];
+const tickerItems = ["Corte", "Barba", "Color", "Mechas", "Moldeador", "Desrizado"];
 
 export default function Hero() {
   return (
@@ -23,7 +23,7 @@ export default function Hero() {
         <div className="flex items-start justify-between gap-4 md:grid md:grid-cols-12 md:gap-10 md:items-center">
           <div className="flex-1 md:col-span-7">
             <p className="anim-up font-accent text-xs md:text-sm text-gold tracking-[0.35em] uppercase mb-6 md:mb-8" style={{ animationDelay: "0ms" }}>
-              Peluquería y barbería · El Puerto de Santa María
+              Estilismo · El Puerto de Santa María
             </p>
             <h1
               className="anim-up font-display italic font-semibold leading-[0.95] text-foreground"
@@ -34,7 +34,7 @@ export default function Hero() {
               <span className="sr-only"> · Peluquería de caballeros en El Puerto de Santa María</span>
             </h1>
             <p className="anim-up mt-5 md:mt-8 font-body font-light text-base md:text-xl text-foreground/75 max-w-xl" style={{ animationDelay: "450ms" }}>
-              Tu peluquero de toda la vida en El Puerto de Santa María. Corte de pelo para hombre, arreglo de barba, color y mechas con oficio, sin prisas y a buen precio.
+              Estilismo y tendencia para caballeros. Cortes, barba y color con la precisión de un oficio cuidado.
             </p>
             <a
               href={BUSINESS_CONFIG.business.reviewsUrl}
@@ -49,8 +49,8 @@ export default function Hero() {
               <span className="font-body text-sm text-foreground/70">{BUSINESS_CONFIG.business.reviewCount} reseñas en Google</span>
             </a>
             <div className="anim-up mt-7 md:mt-10 flex flex-col md:flex-row md:flex-wrap gap-3 md:gap-4" style={{ animationDelay: "750ms" }}>
-              <a href="#reservar" className="btn-gold text-center"><Scissors size={16} /> Reservar cita online</a>
-              <a href="#servicios" className="btn-ghost text-center">Ver precios</a>
+              <a href="#reservar" className="btn-gold text-center"><Scissors size={16} /> Reservar Cita</a>
+              <a href="#servicios" className="btn-ghost text-center">Ver Servicios</a>
             </div>
           </div>
 
@@ -66,7 +66,7 @@ export default function Hero() {
                 <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-black/50 to-transparent" />
                 <div className="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-black/50 to-transparent" />
               </div>
-              <p className="mt-3 md:mt-6 text-center font-accent text-[9px] md:text-xs text-gold/70 tracking-[0.2em] md:tracking-[0.35em]">Av. de la Música 12</p>
+              <p className="mt-3 md:mt-6 text-center font-accent text-[9px] md:text-xs text-gold/70 tracking-[0.2em] md:tracking-[0.35em]">Av. Música 12</p>
             </div>
           </div>
         </div>

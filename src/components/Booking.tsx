@@ -147,7 +147,7 @@ export default function Booking() {
             Reserva tu <span className="text-gold-light">cita</span>
           </h2>
           <p className="mt-5 font-body text-foreground/70 max-w-xl">
-            Pide cita online en cuatro pasos: elige servicio, día y hora libre. Si lo prefieres, escríbenos por WhatsApp o llámanos.
+            Gestión rápida por WhatsApp o llamada. Te confirmamos en minutos.
           </p>
         </div>
 

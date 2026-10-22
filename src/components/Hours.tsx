@@ -18,10 +18,7 @@ export default function Hours() {
       <div className="max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-14 md:gap-20">
         <div ref={r1} className="reveal">
           <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ Visítanos</p>
-          <h2 className="font-display italic text-5xl md:text-7xl mt-3 text-foreground">Horario y <span className="text-gold-light">ubicación</span></h2>
-          <p className="mt-5 font-body text-foreground/70 max-w-md">
-            Abrimos de lunes a sábado en la {business.address}, {business.city}. Llámanos, escríbenos por WhatsApp o reserva tu hora online para no esperar.
-          </p>
+          <h2 className="font-display italic text-5xl md:text-7xl mt-3 text-foreground">Horario</h2>
 
           <ul className="mt-10 space-y-1">
             {schedule.map(([d, h]) => (

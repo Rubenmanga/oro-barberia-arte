@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { Menu, X, Scissors } from "lucide-react";
 
 const links = [
-  { href: "#sobre-fran", label: "Sobre Fran" },
-  { href: "#servicios", label: "Precios" },
+  { href: "#servicios", label: "Servicios" },
+  { href: "#contacto", label: "Contacto" },
   { href: "#resenas", label: "Reseñas" },
-  { href: "#contacto", label: "Horario y contacto" },
 ];
 
 export default function Navbar() {
@@ -43,7 +42,7 @@ export default function Navbar() {
             />
           </a>
 
-          <div className="hidden md:flex items-center gap-8 lg:gap-10">
+          <div className="hidden md:flex items-center gap-10">
             {links.map((l) => (
               <a
                 key={l.href}

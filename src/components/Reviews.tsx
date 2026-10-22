@@ -48,9 +48,9 @@ export default function Reviews() {
       <div className="absolute inset-0 bg-ink/75 pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-10">
         <div ref={head} className="reveal max-w-3xl">
-          <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ {BUSINESS_CONFIG.business.rating} ★ · {BUSINESS_CONFIG.business.reviewCount} reseñas en Google</p>
+          <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ Lo que dicen nuestros clientes</p>
           <h2 className="font-display italic text-5xl md:text-7xl mt-3 text-foreground">
-            Opiniones de <span className="text-gold-light">clientes</span>
+            Reseñas <span className="text-gold-light">reales</span>
           </h2>
         </div>
       </div>
