@@ -7,11 +7,12 @@ export default function About() {
 
   return (
     <section
+      id="sobre-nosotros"
       className="relative py-28 md:py-40"
       style={{
         backgroundImage: 'url(/local-interior.jpg)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center 40%',
+        backgroundPosition: 'center 65%',
       }}
     >
       <div className="absolute inset-0 bg-ink/75 pointer-events-none" />
@@ -22,7 +23,7 @@ export default function About() {
           <p className="font-display italic text-3xl md:text-5xl leading-tight text-gold-light">
             El mejor peluquero de todo El Puerto.
           </p>
-          <p className="mt-6 font-accent text-xs text-gold/70 tracking-[0.3em]">— Reseña verificada en Google</p>
+          <p className="mt-6 font-accent text-xs text-gold/70 tracking-[0.3em]">— Reseña en Google</p>
         </div>
 
         <div ref={r2} className="reveal md:col-span-6 space-y-5">

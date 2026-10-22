@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Calendar, Clock, User, Phone, Mail, Check, X, Trash2, ArrowLeft, LogOut } from "lucide-react";
-import { getAllBookings, updateBookingStatus, deleteBooking } from "@/lib/bookings";
+import { getAllBookings, updateBookingStatus, deleteBooking, syncBookingToCalendar } from "@/lib/bookings";
 import { signIn, signOut, getSession } from "@/lib/auth";
 import { type Booking } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export default function Admin() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Awaited<ReturnType<typeof getSession>>>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +15,15 @@ export default function Admin() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<"all" | "pending" | "confirmed" | "cancelled">("all");
+
+  // Que Google no indexe el panel
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => meta.remove();
+  }, []);
 
   // Comprobar sesión al cargar
   useEffect(() => {
@@ -59,6 +68,10 @@ export default function Admin() {
   async function handleStatusChange(id: string, status: "pending" | "confirmed" | "cancelled") {
     try {
       await updateBookingStatus(id, status);
+      if (status !== "pending") {
+        const synced = await syncBookingToCalendar(id, status);
+        if (!synced) toast.warning("No se pudo actualizar Google Calendar");
+      }
       toast.success(`Reserva ${status === "confirmed" ? "confirmada" : "cancelada"}`);
       loadBookings();
     } catch (error) {
@@ -70,6 +83,7 @@ export default function Admin() {
     if (!confirm("¿Estás seguro de eliminar esta reserva?")) return;
     try {
       await deleteBooking(id);
+      await syncBookingToCalendar(id, "deleted");
       toast.success("Reserva eliminada");
       loadBookings();
     } catch (error) {
@@ -104,7 +118,7 @@ export default function Admin() {
       <div className="min-h-screen bg-ink flex items-center justify-center px-4">
         <div className="w-full max-w-sm bg-ink-card border border-border p-8">
           <h1 className="font-display italic text-3xl text-gold-light mb-2">Acceso Admin</h1>
-          <p className="font-body text-sm text-foreground/50 mb-8">Oro Barbería</p>
+          <p className="font-body text-sm text-foreground/50 mb-8">Peluquería Fran Fuentes</p>
 
           <div className="space-y-4">
             <div>

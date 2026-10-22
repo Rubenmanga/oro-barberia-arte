@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import { useReveal } from "@/hooks/use-reveal";
+import { BUSINESS_CONFIG } from "@/lib/config";
 
 const reviews = [
   { name: "Abel Lozano", tag: "Local Guide", text: "Excelente peluquero, muy simpático y corte de pelo con mucho estilo. Puntual, local agradable y buen precio. No se puede pedir más." },
@@ -38,14 +39,15 @@ export default function Reviews() {
     <section
       id="resenas"
       className="relative py-24 md:py-36 overflow-hidden"
-      style={{
-        backgroundImage: 'url(/local-entero.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
     >
+      {/* La foto es pequeña (399 px): se difumina para que no se vea pixelada */}
+      <div
+        className="absolute -inset-8 pointer-events-none blur-md scale-105"
+        style={{ backgroundImage: 'url(/local-entero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+        aria-hidden="true"
+      />
       <div className="absolute inset-0 bg-ink/75 pointer-events-none" />
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+      <div className="relative max-w-7xl mx-auto px-6 md:px-10">
         <div ref={head} className="reveal max-w-3xl">
           <p className="font-accent text-xs text-gold tracking-[0.35em] uppercase">⎯⎯ Lo que dicen nuestros clientes</p>
           <h2 className="font-display italic text-5xl md:text-7xl mt-3 text-foreground">
@@ -54,16 +56,16 @@ export default function Reviews() {
         </div>
       </div>
 
-      <div className="mt-14 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+      <div className="relative mt-14 overflow-x-auto no-scrollbar snap-x snap-mandatory">
         <div className="flex gap-6 px-6 md:px-10 pb-6 max-w-[100vw]">
           {reviews.map((r, i) => <ReviewCard key={r.name} r={r} i={i} />)}
           <div className="shrink-0 w-2" />
         </div>
       </div>
 
-      <div className="mt-10 text-center">
+      <div className="relative mt-10 text-center">
         <a
-          href="https://maps.app.goo.gl/XLcAwitWkFQ3kqu1A"
+          href={BUSINESS_CONFIG.business.reviewsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="font-accent text-sm text-gold-light tracking-[0.25em] uppercase border-b border-gold/40 pb-1 hover:text-gold-light hover:border-gold transition-colors"

@@ -1,24 +1,32 @@
 /**
  * 🔧 CONFIGURACIÓN DEL NEGOCIO
  *
- * Cambia estos valores según el cliente final.
- * Mientras aprendes, usa TUS datos.
+ * Única fuente de verdad para nombre, dirección, teléfono y horarios.
+ * Todos los componentes leen de aquí: si cambia un dato, cámbialo solo aquí
+ * (y en el JSON-LD de index.html, que Google lee sin ejecutar JavaScript).
  */
 
 export const BUSINESS_CONFIG = {
-  // 📱 Datos de contacto (ACTUALMENTE: Datos de Juan Miguel para pruebas)
+  // 📱 Datos de contacto (los mismos que en la ficha de Google)
   contact: {
-    phone: "637663153",           // Número de Juan Miguel (para pruebas)
-    whatsapp: "34637663153",      // WhatsApp de Juan Miguel
-    email: "spam.inservible@gmail.com", // Email de Juan Miguel (para pruebas)
+    phone: "617087011",
+    phoneDisplay: "617 087 011",
+    whatsapp: "34617087011",
+    email: "franfuentespeluqueros@hotmail.com",
   },
 
-  // 🏢 Información del negocio
+  // 🏢 Información del negocio (NAP idéntico a Google Business Profile)
   business: {
-    name: "Fran Fuentes Peluquero's",
-    address: "Av. Música 12",
+    name: "Peluquería Fran Fuentes",
+    brand: "Fran Fuentes Peluquero's",
+    address: "Av. de la Música, 12",
     city: "El Puerto de Santa María",
+    province: "Cádiz",
     postalCode: "11500",
+    mapsUrl: "https://maps.app.goo.gl/WJGmrFbPfvdZdBNj6",
+    reviewsUrl: "https://maps.app.goo.gl/XLcAwitWkFQ3kqu1A",
+    rating: "4,9",
+    reviewCount: 97,
   },
 
   // ⏰ Horarios
@@ -32,6 +40,10 @@ export const BUSINESS_CONFIG = {
       afternoon: null, // Cerrado por la tarde
     },
     closedDays: [0], // 0 = Domingo, 6 = Sábado
+    // Días festivos o vacaciones en formato "AAAA-MM-DD": no se podrá reservar
+    closedDates: [] as string[],
+    // Hasta cuántos días vista se puede reservar
+    maxDaysAhead: 60,
   },
 
   // 💰 Servicios y precios
@@ -52,7 +64,7 @@ export const BUSINESS_CONFIG = {
   social: {
     instagram: null,
     facebook: null,
-    google: "https://maps.google.com/?q=Fran+Fuentes+Peluquero",
+    google: "https://maps.app.goo.gl/WJGmrFbPfvdZdBNj6",
   },
 };
 
@@ -60,7 +72,6 @@ export const BUSINESS_CONFIG = {
  * 📞 NOTAS IMPORTANTES:
  *
  * 1. El teléfono debe estar sin espacios: "617087011" ✅ no "617 087 011" ❌
+ *    (para mostrarlo con espacios usa phoneDisplay)
  * 2. WhatsApp necesita código de país: "34617087011" (34 = España)
- * 3. Mientras aprendes, pon TU número para probar
- * 4. Antes de venderlo, cambia a los datos REALES del cliente
  */
