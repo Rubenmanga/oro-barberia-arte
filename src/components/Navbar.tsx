@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Menu, X, Scissors } from "lucide-react";
 
 const links = [
-  { href: "#servicios", label: "Servicios" },
-  { href: "#contacto", label: "Contacto" },
+  { href: "#sobre-fran", label: "Sobre Fran" },
+  { href: "#servicios", label: "Precios" },
   { href: "#resenas", label: "Reseñas" },
+  { href: "#contacto", label: "Horario y contacto" },
 ];
 
 export default function Navbar() {
@@ -32,29 +33,17 @@ export default function Navbar() {
         }`}
       >
         <nav className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-          <a href="#top" className="flex items-center group">
-  <div
-    style={{
-      width: "100px",
-      height: "100px",
-      background: "transparent",
-    }}
-  >
-    <img
-      src="/logo_2.png"
-      alt="Fran Fuentes Peluquero's"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "contain",
-        filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))",
-        backgroundColor: "transparent",
-      }}
-    />
-  </div>
-</a>
+          <a href="#top" className="flex items-center group" aria-label="Peluquería Fran Fuentes, ir al inicio">
+            <img
+              src="/logo_2.webp"
+              alt="Logo de Fran Fuentes Peluquero's"
+              width={100}
+              height={100}
+              className="w-[100px] h-[100px] object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+            />
+          </a>
 
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-8 lg:gap-10">
             {links.map((l) => (
               <a
                 key={l.href}

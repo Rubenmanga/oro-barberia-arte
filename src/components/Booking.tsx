@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { Phone, MessageCircle, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { createBooking, getBookedTimeSlots } from "@/lib/bookings";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { toast } from "sonner";
 
 const services = BUSINESS_CONFIG.services;
+
+// Fecha local en formato AAAA-MM-DD (toISOString usa UTC y falla cerca de medianoche)
+function toLocalDateStr(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 interface BookingData {
   service: string;
@@ -62,26 +68,21 @@ async function submitBooking(data: BookingData) {
       }
     }
 
-    // Generar mensaje de WhatsApp
-    const message = `🎉 *Nueva reserva*\n\n` +
-      `👤 *Cliente:* ${data.name}\n` +
+    // Mensaje opcional para que el cliente avise por WhatsApp
+    const message = `Hola Fran, acabo de pedir cita por la web:\n\n` +
+      `👤 *Nombre:* ${data.name}\n` +
       `✂️ *Servicio:* ${data.service}\n` +
       `📅 *Fecha:* ${new Date(data.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}\n` +
-      `🕐 *Hora:* ${data.time}\n` +
-      `📧 *Email:* ${data.email}\n` +
-      `📱 *Teléfono:* ${data.phone}`;
+      `🕐 *Hora:* ${data.time}`;
 
-    // Abrir WhatsApp con el mensaje (notifica al negocio)
     const whatsappUrl = `https://wa.me/${BUSINESS_CONFIG.contact.whatsapp}?text=${encodeURIComponent(message)}`;
 
-    console.log("✅ Reserva guardada:", data);
-    console.log("📱 WhatsApp URL:", whatsappUrl);
-
-    return { success: true, whatsappUrl };
+    return { success: true as const, whatsappUrl };
   } catch (error) {
     console.error("❌ Error al guardar reserva:", error);
-    toast.error("Error al crear la reserva. Por favor, intenta de nuevo.");
-    return { success: false };
+    // 23505 = violación del índice único: alguien reservó esa hora justo antes
+    const slotTaken = (error as { code?: string })?.code === "23505";
+    return { success: false as const, slotTaken };
   }
 }
 
@@ -89,6 +90,8 @@ export default function Booking() {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [bookingData, setBookingData] = useState<Partial<BookingData>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
   const progress = (step / 4) * 100;
 
@@ -101,13 +104,23 @@ export default function Booking() {
   }
 
   async function handleSubmit() {
+    if (submitting) return;
     if (bookingData.service && bookingData.date && bookingData.time && bookingData.name && bookingData.email && bookingData.phone) {
-      toast.loading("Creando tu reserva...");
+      setSubmitting(true);
+      const toastId = toast.loading("Enviando tu solicitud...");
       const result = await submitBooking(bookingData as BookingData);
+      setSubmitting(false);
 
       if (result.success) {
-        toast.success("¡Reserva creada con éxito!");
+        toast.success("¡Solicitud de cita enviada!", { id: toastId });
+        setWhatsappUrl(result.whatsappUrl);
         setSubmitted(true);
+      } else if (result.slotTaken) {
+        toast.error("Esa hora se acaba de ocupar. Elige otra, por favor.", { id: toastId });
+        setBookingData({ ...bookingData, time: undefined });
+        setStep(3);
+      } else {
+        toast.error("No se pudo enviar la reserva. Inténtalo de nuevo o llámanos.", { id: toastId });
       }
     }
   }
@@ -116,6 +129,7 @@ export default function Booking() {
     setStep(1);
     setBookingData({});
     setSubmitted(false);
+    setWhatsappUrl(null);
   }
 
   return (
@@ -128,7 +142,7 @@ export default function Booking() {
             Reserva tu <span className="text-gold-light">cita</span>
           </h2>
           <p className="mt-5 font-body text-foreground/70 max-w-xl">
-            Gestión rápida por WhatsApp o llamada. Te confirmamos en minutos.
+            Pide cita online en cuatro pasos: elige servicio, día y hora libre. Si lo prefieres, escríbenos por WhatsApp o llámanos.
           </p>
         </div>
 
@@ -142,9 +156,16 @@ export default function Booking() {
               </div>
               <h3 className="font-display italic text-3xl md:text-4xl text-gold-light">¡Solicitud recibida!</h3>
               <p className="mt-4 font-body text-foreground/80 max-w-lg mx-auto">
-                Te confirmaremos la cita por WhatsApp o llamada en breve. Gracias, <span className="text-gold-light">{bookingData.name}</span>.
+                Gracias, <span className="text-gold-light">{bookingData.name}</span>. Te hemos enviado un email con los datos y te confirmaremos la cita por WhatsApp o llamada.
               </p>
-              <button onClick={reset} className="btn-ghost mt-8">Nueva solicitud</button>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                {whatsappUrl && (
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-gold">
+                    <MessageCircle size={16} /> Avisar a Fran por WhatsApp
+                  </a>
+                )}
+                <button onClick={reset} className="btn-ghost">Nueva solicitud</button>
+              </div>
             </div>
           ) : (
             <>
@@ -185,7 +206,7 @@ export default function Booking() {
               {step === 3 && <Step3 date={bookingData.date || ""} selected={bookingData.time} onSelect={(t) => { setBookingData({ ...bookingData, time: t }); nextStep(); }} />}
 
               {/* Paso 4: Datos personales */}
-              {step === 4 && <Step4 data={bookingData} onChange={(d) => setBookingData({ ...bookingData, ...d })} onSubmit={handleSubmit} />}
+              {step === 4 && <Step4 data={bookingData} submitting={submitting} onChange={(d) => setBookingData({ ...bookingData, ...d })} onSubmit={handleSubmit} />}
 
               {/* Navegación */}
               <div className="flex gap-3 mt-8">
@@ -208,16 +229,16 @@ export default function Booking() {
           <a
             href={`https://wa.me/${BUSINESS_CONFIG.contact.whatsapp}`}
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
             className="flex items-center justify-center gap-3 py-4 border border-emerald-500/40 bg-emerald-500/5 text-emerald-300 font-accent tracking-[0.2em] text-sm uppercase hover:bg-emerald-500/10 transition-colors"
           >
-            <MessageCircle size={18} /> WhatsApp · {BUSINESS_CONFIG.contact.phone}
+            <MessageCircle size={18} /> WhatsApp · {BUSINESS_CONFIG.contact.phoneDisplay}
           </a>
           <a
-            href={`tel:${BUSINESS_CONFIG.contact.phone}`}
+            href={`tel:+34${BUSINESS_CONFIG.contact.phone}`}
             className="flex items-center justify-center gap-3 py-4 border border-gold/40 bg-gold/5 text-gold-light font-accent tracking-[0.2em] text-sm uppercase hover:bg-gold/10 transition-colors"
           >
-            <Phone size={18} /> Llamar · {BUSINESS_CONFIG.contact.phone}
+            <Phone size={18} /> Llamar · {BUSINESS_CONFIG.contact.phoneDisplay}
           </a>
         </div>
       </div>
@@ -277,8 +298,11 @@ function Step1({ selected, onSelect }: { selected?: string; onSelect: (s: string
         {/* Imagen de fondo circular */}
         <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-gold shadow-[0_0_30px_rgba(212,175,55,0.4)]">
           <img
-            src="/service-wheel.png"
-            alt="Servicios"
+            src="/service-wheel.webp"
+            alt="Servicios de Peluquería Fran Fuentes"
+            width={800}
+            height={609}
+            loading="lazy"
             className="w-full h-full object-cover"
           />
         </div>
@@ -444,13 +468,26 @@ function Step2({ selected, onSelect }: { selected?: string; onSelect: (d: string
     return date < todayDate;
   }
 
+  const lastBookable = new Date();
+  lastBookable.setHours(0, 0, 0, 0);
+  lastBookable.setDate(lastBookable.getDate() + BUSINESS_CONFIG.hours.maxDaysAhead);
+
+  function isOutOfRange(day: number) {
+    const dateStr = toLocalDateStr(new Date(year, month, day));
+    return new Date(year, month, day) > lastBookable || BUSINESS_CONFIG.hours.closedDates.includes(dateStr);
+  }
+
+  const canGoPrev = year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth());
+  const canGoNext = new Date(year, month + 1, 1) <= lastBookable;
+
   function handleDayClick(day: number) {
-    if (isDayClosed(day) || isPastDay(day)) return;
+    if (isDayClosed(day) || isPastDay(day) || isOutOfRange(day)) return;
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     onSelect(dateStr);
   }
 
   function prevMonth() {
+    if (!canGoPrev) return;
     if (month === 0) {
       setMonth(11);
       setYear(year - 1);
@@ -460,6 +497,7 @@ function Step2({ selected, onSelect }: { selected?: string; onSelect: (d: string
   }
 
   function nextMonth() {
+    if (!canGoNext) return;
     if (month === 11) {
       setMonth(0);
       setYear(year + 1);
@@ -475,11 +513,11 @@ function Step2({ selected, onSelect }: { selected?: string; onSelect: (d: string
 
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={prevMonth} className="p-2 text-gold hover:text-gold-light transition-colors">
+          <button onClick={prevMonth} disabled={!canGoPrev} aria-label="Mes anterior" className="p-2 text-gold hover:text-gold-light transition-colors disabled:opacity-20 disabled:cursor-not-allowed">
             <ChevronLeft size={24} />
           </button>
           <h4 className="font-accent text-gold tracking-[0.2em] uppercase text-sm">{monthName}</h4>
-          <button onClick={nextMonth} className="p-2 text-gold hover:text-gold-light transition-colors">
+          <button onClick={nextMonth} disabled={!canGoNext} aria-label="Mes siguiente" className="p-2 text-gold hover:text-gold-light transition-colors disabled:opacity-20 disabled:cursor-not-allowed">
             <ChevronRight size={24} />
           </button>
         </div>
@@ -502,7 +540,7 @@ function Step2({ selected, onSelect }: { selected?: string; onSelect: (d: string
             const isSelected = selected === dateStr;
             const isClosed = isDayClosed(day);
             const isPast = isPastDay(day);
-            const isDisabled = isClosed || isPast;
+            const isDisabled = isClosed || isPast || isOutOfRange(day);
 
             return (
               <button
@@ -536,7 +574,7 @@ function Step3({ date, selected, onSelect }: { date: string; selected?: string; 
   const selectedDate = new Date(date + "T00:00:00");
   const dayOfWeek = selectedDate.getDay();
   const isSaturday = dayOfWeek === 6;
-  const isToday = date === new Date().toISOString().split("T")[0];
+  const isToday = date === toLocalDateStr(new Date());
 
   // Horario según configuración
   const scheduleConfig = isSaturday ? BUSINESS_CONFIG.hours.saturday : BUSINESS_CONFIG.hours.weekday;
@@ -669,8 +707,11 @@ function Step3({ date, selected, onSelect }: { date: string; selected?: string; 
 }
 
 // Paso 4: Datos personales
-function Step4({ data, onChange, onSubmit }: { data: Partial<BookingData>; onChange: (d: Partial<BookingData>) => void; onSubmit: () => void }) {
-  const canSubmit = data.name && data.email && data.phone;
+function Step4({ data, submitting, onChange, onSubmit }: { data: Partial<BookingData>; submitting: boolean; onChange: (d: Partial<BookingData>) => void; onSubmit: () => void }) {
+  const [accepted, setAccepted] = useState(false);
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email || "");
+  const phoneValid = (data.phone || "").replace(/[\s+-]/g, "").length >= 9;
+  const canSubmit = !!data.name?.trim() && emailValid && phoneValid && accepted && !submitting;
 
   return (
     <div className="py-8">
@@ -684,6 +725,8 @@ function Step4({ data, onChange, onSubmit }: { data: Partial<BookingData>; onCha
             value={data.name || ""}
             onChange={(e) => onChange({ name: e.target.value })}
             placeholder="Tu nombre"
+            autoComplete="name"
+            maxLength={80}
             className="input-dark"
           />
         </Field>
@@ -694,6 +737,8 @@ function Step4({ data, onChange, onSubmit }: { data: Partial<BookingData>; onCha
             value={data.email || ""}
             onChange={(e) => onChange({ email: e.target.value })}
             placeholder="tu@email.com"
+            autoComplete="email"
+            maxLength={120}
             className="input-dark"
           />
         </Field>
@@ -704,6 +749,9 @@ function Step4({ data, onChange, onSubmit }: { data: Partial<BookingData>; onCha
             value={data.phone || ""}
             onChange={(e) => onChange({ phone: e.target.value })}
             placeholder="6XX XXX XXX"
+            autoComplete="tel"
+            inputMode="tel"
+            maxLength={20}
             className="input-dark"
           />
         </Field>
@@ -717,8 +765,20 @@ function Step4({ data, onChange, onSubmit }: { data: Partial<BookingData>; onCha
           </div>
         </div>
 
+        <label className="flex items-start gap-3 font-body text-sm text-foreground/70 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={accepted}
+            onChange={(e) => setAccepted(e.target.checked)}
+            className="mt-1 accent-[hsl(var(--gold))]"
+          />
+          <span>
+            He leído y acepto la <Link to="/privacidad" target="_blank" className="text-gold-light underline">política de privacidad</Link>. Usaremos tus datos solo para gestionar tu cita.
+          </span>
+        </label>
+
         <button onClick={onSubmit} disabled={!canSubmit} className="btn-gold w-full mt-6 disabled:opacity-40 disabled:cursor-not-allowed">
-          <Check size={16} /> Confirmar reserva
+          <Check size={16} /> {submitting ? "Enviando..." : "Solicitar cita"}
         </button>
       </div>
     </div>

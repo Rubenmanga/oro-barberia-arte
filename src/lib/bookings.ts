@@ -4,18 +4,16 @@ import { supabase, type Booking } from './supabase';
  * Crea una nueva reserva en la base de datos
  */
 export async function createBooking(booking: Omit<Booking, 'id' | 'created_at'>) {
-  const { data, error } = await supabase
+  // Sin .select(): los visitantes no tienen permiso de lectura sobre la tabla
+  // (ver supabase-security.sql), así que pedir la fila de vuelta fallaría.
+  const { error } = await supabase
     .from('bookings')
-    .insert([{ ...booking, status: 'pending' }])
-    .select()
-    .single();
+    .insert([{ ...booking, status: 'pending' }]);
 
   if (error) {
     console.error('Error al crear reserva:', error);
     throw error;
   }
-
-  return data;
 }
 
 /**
@@ -95,9 +93,18 @@ export async function deleteBooking(id: string) {
 
 /**
  * Obtiene las horas ocupadas para una fecha específica
- * Útil para deshabilitar slots en el calendario
+ * Útil para deshabilitar slots en el calendario.
+ *
+ * Usa la función get_booked_slots (ver supabase-security.sql), que solo
+ * devuelve horas, sin nombres, emails ni teléfonos de otros clientes.
+ * Si la función aún no existe, recurre a la consulta antigua.
  */
-export async function getBookedTimeSlots(date: string) {
+export async function getBookedTimeSlots(date: string): Promise<string[]> {
+  const { data: slots, error: rpcError } = await supabase.rpc('get_booked_slots', { p_date: date });
+  if (!rpcError && Array.isArray(slots)) {
+    return slots.map((row: { time: string } | string) => (typeof row === 'string' ? row : row.time));
+  }
+
   const { data, error } = await supabase
     .from('bookings')
     .select('time')
