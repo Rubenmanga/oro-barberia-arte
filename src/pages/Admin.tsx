@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Calendar, Clock, User, Phone, Mail, Check, X, Trash2, ArrowLeft, LogOut } from "lucide-react";
-import { getAllBookings, updateBookingStatus, deleteBooking } from "@/lib/bookings";
+import { getAllBookings, updateBookingStatus, deleteBooking, syncBookingToCalendar } from "@/lib/bookings";
 import { signIn, signOut, getSession } from "@/lib/auth";
 import { type Booking } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -68,6 +68,10 @@ export default function Admin() {
   async function handleStatusChange(id: string, status: "pending" | "confirmed" | "cancelled") {
     try {
       await updateBookingStatus(id, status);
+      if (status !== "pending") {
+        const synced = await syncBookingToCalendar(id, status);
+        if (!synced) toast.warning("No se pudo actualizar Google Calendar");
+      }
       toast.success(`Reserva ${status === "confirmed" ? "confirmada" : "cancelada"}`);
       loadBookings();
     } catch (error) {
@@ -79,6 +83,7 @@ export default function Admin() {
     if (!confirm("¿Estás seguro de eliminar esta reserva?")) return;
     try {
       await deleteBooking(id);
+      await syncBookingToCalendar(id, "deleted");
       toast.success("Reserva eliminada");
       loadBookings();
     } catch (error) {

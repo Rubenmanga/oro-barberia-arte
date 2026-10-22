@@ -1,4 +1,5 @@
 import { BrevoClient } from '@getbrevo/brevo';
+import { upsertBookingEvent } from './_google-calendar.js';
 
 const BUSINESS_NAME = 'Peluquería Fran Fuentes';
 const BUSINESS_ADDRESS = 'Av. de la Música, 12 · 11500 El Puerto de Santa María (Cádiz)';
@@ -73,6 +74,19 @@ export default async function handler(req, res) {
     const name = escapeHtml(body.name);
     const service = escapeHtml(body.service);
     const phone = escapeHtml(body.phone);
+
+    // Apuntar la cita en el Google Calendar de Fran (si está configurado)
+    let calendarResult = 'disabled';
+    if (typeof body.id === 'string' && /^[0-9a-f-]{36}$/i.test(body.id)) {
+      try {
+        calendarResult = await upsertBookingEvent({
+          id: body.id, name: body.name, email, service: body.service, phone: body.phone, date, time, status: 'pending',
+        });
+      } catch (calendarError) {
+        calendarResult = 'failed';
+        console.error('❌ Error al crear el evento en Google Calendar:', calendarError);
+      }
+    }
 
     const peluqueroEmail = process.env.PELUQUERO_EMAIL;
     if (!peluqueroEmail) {
@@ -365,6 +379,7 @@ export default async function handler(req, res) {
     const results = {
       customerEmail: customerEmailSuccess ? 'sent' : 'failed',
       barberEmail: barberEmailSuccess ? 'sent' : 'failed',
+      calendar: calendarResult,
     };
 
     return res.status(200).json({

@@ -23,8 +23,12 @@ interface BookingData {
 
 async function submitBooking(data: BookingData) {
   try {
+    // El id se genera aquí para poder enlazar la reserva con su evento de Google Calendar
+    const id = crypto.randomUUID();
+
     // Guardar en Supabase
     await createBooking({
+      id,
       service: data.service,
       date: data.date,
       time: data.time,
@@ -42,6 +46,7 @@ async function submitBooking(data: BookingData) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id,
           name: data.name,
           email: data.email,
           service: data.service,

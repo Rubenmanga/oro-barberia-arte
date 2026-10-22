@@ -1,4 +1,4 @@
-# ✂️ Oro Barbería Arte - Sistema de Reservas
+# ✂️ Peluquería Fran Fuentes - Web y sistema de reservas
 
 <div align="center">
 
@@ -11,7 +11,7 @@
 
 **Web premium para barbería con sistema de reservas en tiempo real y emails automáticos**
 
-[Demo en vivo](https://oro-barberia-arte.vercel.app) • [Documentación](#-documentación) • [Inicio rápido](#-inicio-rápido)
+[Web en vivo](https://franfuentespeluqueros.vercel.app) • [Documentación](#-documentación) • [Inicio rápido](#-inicio-rápido)
 
 </div>
 
@@ -19,13 +19,14 @@
 
 ## 📖 Descripción
 
-Sistema completo de gestión de reservas para **Oro Barbería Arte** ubicado en El Puerto de Santa María. 
+Web y sistema de reservas de **Peluquería Fran Fuentes** (Av. de la Música, 12, El Puerto de Santa María).
 
 Incluye:
 - ✨ Diseño premium con selector circular de servicios
 - 📅 Wizard de reservas en 4 pasos
 - ⚡ Sistema en tiempo real con Supabase
 - 📧 Emails automáticos con Brevo (cliente + peluquero)
+- 📅 Citas en el Google Calendar de Fran, y las horas que él apunte se bloquean en la web ([GOOGLE-CALENDAR.md](./GOOGLE-CALENDAR.md))
 - 📱 Responsive (móvil, tablet y desktop)
 - 🔒 Detección de horarios ocupados en tiempo real
 - 🎨 Panel de administración completo

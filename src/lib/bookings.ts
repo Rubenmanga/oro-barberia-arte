@@ -3,7 +3,7 @@ import { supabase, type Booking } from './supabase';
 /**
  * Crea una nueva reserva en la base de datos
  */
-export async function createBooking(booking: Omit<Booking, 'id' | 'created_at'>) {
+export async function createBooking(booking: Omit<Booking, 'created_at'>) {
   // Sin .select(): los visitantes no tienen permiso de lectura sobre la tabla
   // (ver supabase-security.sql), así que pedir la fila de vuelta fallaría.
   const { error } = await supabase
@@ -75,6 +75,26 @@ export async function updateBookingStatus(
 }
 
 /**
+ * Refleja en Google Calendar un cambio hecho desde el panel admin.
+ * Si el calendario no está configurado, la API responde sin hacer nada.
+ */
+export async function syncBookingToCalendar(id: string, action: 'confirmed' | 'cancelled' | 'deleted') {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) return false;
+  try {
+    const response = await fetch('/api/booking-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ id, action }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Elimina una reserva
  */
 export async function deleteBooking(id: string) {
@@ -95,11 +115,23 @@ export async function deleteBooking(id: string) {
  * Obtiene las horas ocupadas para una fecha específica
  * Útil para deshabilitar slots en el calendario.
  *
- * Usa la función get_booked_slots (ver supabase-security.sql), que solo
- * devuelve horas, sin nombres, emails ni teléfonos de otros clientes.
- * Si la función aún no existe, recurre a la consulta antigua.
+ * Si la API no responde, usa la función get_booked_slots (ver
+ * supabase-security.sql), que solo devuelve horas, sin nombres, emails ni
+ * teléfonos de otros clientes. Si tampoco existe, recurre a la consulta antigua.
  */
 export async function getBookedTimeSlots(date: string): Promise<string[]> {
+  // En producción, /api/availability junta las reservas web y lo que Fran
+  // tenga apuntado en su Google Calendar (citas por teléfono, descansos...)
+  try {
+    const response = await fetch(`/api/availability?date=${encodeURIComponent(date)}`);
+    if (response.ok) {
+      const { booked } = await response.json();
+      if (Array.isArray(booked)) return booked;
+    }
+  } catch {
+    // Sin API (por ejemplo con npm run dev): consultamos Supabase directamente
+  }
+
   const { data: slots, error: rpcError } = await supabase.rpc('get_booked_slots', { p_date: date });
   if (!rpcError && Array.isArray(slots)) {
     return slots.map((row: { time: string } | string) => (typeof row === 'string' ? row : row.time));
