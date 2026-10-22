@@ -9,7 +9,7 @@ export default function Hero() {
   style={{
     backgroundImage: 'url(/local-hero.jpg)',
     backgroundSize: 'cover',
-    backgroundPosition: 'center 30%',
+    backgroundPosition: 'center 65%',
   }}
 >
       {/* Overlay oscuro para legibilidad */}

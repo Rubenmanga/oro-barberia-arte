@@ -12,7 +12,7 @@ export default function About() {
       style={{
         backgroundImage: 'url(/local-interior.jpg)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center 40%',
+        backgroundPosition: 'center 65%',
       }}
     >
       <div className="absolute inset-0 bg-ink/75 pointer-events-none" />

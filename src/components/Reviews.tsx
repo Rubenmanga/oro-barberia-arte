@@ -39,12 +39,13 @@ export default function Reviews() {
     <section
       id="resenas"
       className="relative py-24 md:py-36 overflow-hidden"
-      style={{
-        backgroundImage: 'url(/local-entero.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
     >
+      {/* La foto es pequeña (399 px): se difumina para que no se vea pixelada */}
+      <div
+        className="absolute -inset-8 pointer-events-none blur-md scale-105"
+        style={{ backgroundImage: 'url(/local-entero.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
+        aria-hidden="true"
+      />
       <div className="absolute inset-0 bg-ink/75 pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-6 md:px-10">
         <div ref={head} className="reveal max-w-3xl">
